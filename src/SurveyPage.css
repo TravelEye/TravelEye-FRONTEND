@@ -1,0 +1,55 @@
+/*import "./pages/fonts/Font.css";*/
+
+/* 스켈레톤 스타일 */
+.survey-container {
+  width: 100%;
+  height: 100%;
+  padding: 20px 20px 20px 20px;
+  background-color: #29c29c;
+  /*border: 1px solid #ccc;*/
+}
+
+.survey-title {
+  font-size: 24px;
+  color: whitesmoke;
+  font-family: "NotoSansKR";
+  font-weight: bold;
+  text-align: center;
+}
+
+.question-container {
+  margin: 20px 0;
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.question {
+  font-size: 18px;
+  font-family: "NotoSansKR";
+  text-align: left;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.answer-options {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-bottom: 10px;
+}
+
+input[type="radio"] {
+  margin-right: 5px;
+}
+
+.button {
+  position: absolute;
+  top: 50%;
+  background-color: #0a0a23;
+  color: #fff;
+}
