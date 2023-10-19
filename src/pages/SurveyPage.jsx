@@ -4,7 +4,7 @@ import styled from "styled-components";
 /*import "./fonts/Font.css";*/
 const SurveyContainer = styled.div`
   padding: 20px 20px 20px 20px;
-  background-color: #29c29c;
+  background-color: rgb(41, 194, 156);
 `;
 const QuestionContainer = styled.div`
   margin: 20px 0;
