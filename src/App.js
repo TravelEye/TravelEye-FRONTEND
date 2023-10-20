@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import MainPage from "./pages/MainPage";
-import SurveyPage from "./pages/SurveyPage";
+import MainPage from "./pages/Main";
+import SurveyPage from "./pages/Survey/SurveyPage";
 import "./App.css";
-import MapPage from "./pages/MapPage";
+import MapPage from "./pages/Map/MapPage";
 import { RecoilRoot } from "recoil";
 import {
   BrowserRouter as Router,

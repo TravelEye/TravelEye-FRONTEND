@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../SurveyPage.css";
+import "./SurveyPage.css";
 import styled from "styled-components";
 /*import "./fonts/Font.css";*/
 const SurveyContainer = styled.div`
