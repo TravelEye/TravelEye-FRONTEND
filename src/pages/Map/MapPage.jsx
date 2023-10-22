@@ -1,5 +1,5 @@
 import React from "react";
-import Map from "./Map";
+import Map from "./Map/Map";
 import styled from "styled-components";
 
 const adContainer = styled.div`

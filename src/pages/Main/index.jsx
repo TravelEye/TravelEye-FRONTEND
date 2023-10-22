@@ -25,7 +25,6 @@ function MainPage() {
           `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${process.env.REACT_APP_WEATHER_KEY}`
         );
         const data = await response.json();
-        console.log(data.weather[0].main);
         const icon = data.weather[0].icon;
         setWeather({
           description: data.weather[0].main,
@@ -41,7 +40,7 @@ function MainPage() {
   }, [city]);
   return (
     <MainPageContainer>
-      <div>{user}님</div>
+      <UserContainer>{user}님</UserContainer>
       {weather && (
         <WeatherContainer>
           <WeatherBackgroundWrapper type={weather.description}>
@@ -49,7 +48,6 @@ function MainPage() {
             <CityTextWrapper>{city}</CityTextWrapper>
             <img src={weather.icon} />
           </WeatherBackgroundWrapper>
-          {/* {weather.description} */}
         </WeatherContainer>
       )}
       <ChecklistContainer>Checklist</ChecklistContainer>

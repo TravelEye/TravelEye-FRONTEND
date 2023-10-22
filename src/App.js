@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import MainPage from "./pages/Main";
+import CheckListPage from "./pages/CheckList";
 import SurveyPage from "./pages/Survey/SurveyPage";
+import MapPage from "./pages/Map/Map";
 import "./App.css";
-import MapPage from "./pages/Map/MapPage";
 import { RecoilRoot } from "recoil";
 import {
   BrowserRouter as Router,
@@ -18,6 +19,7 @@ function Content() {
         <Route exact path="/" element={<MainPage />} />
         <Route exact path="/map" element={<MapPage />} />
         <Route exact path="/survey" element={<SurveyPage />} />
+        <Route exact path="/checklist" element={<CheckListPage />} />
       </Routes>
     </>
   );
