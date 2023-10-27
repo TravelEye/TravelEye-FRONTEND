@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import "../SurveyPage.css";
 import styled from "styled-components";
-/*import "./fonts/Font.css";*/
+
 const SurveyContainer = styled.div`
   padding: 20px 20px 20px 20px;
   background-color: rgb(41, 194, 156);
@@ -29,6 +28,13 @@ const SelectButton = styled.div`
 `;
 
 function SurveyPage() {
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [currentTheme, setCurrentTheme] = useState(0);
+  const [showSubmit, setShowSubmit] = useState(false); // 상태 추가
+  const [showResults, setShowResults] = useState(false);
+  const [answers, setAnswers] = useState({});
+  const [currentAnswerKey, setCurrentAnswerKey] = useState(0);
+
   const themes = [
     "목적지 스타일",
     "목적지 스타일",
@@ -49,8 +55,8 @@ function SurveyPage() {
     "맛집 딱히 상관없다면 1, 맛집 식도락 여행하고 싶으면 5",
     "당일치기 여행에 가깝다면 1, 숙소 필수라면 5",
     "불편해도 싸면 장땡 1 비싸도 편하길 원하면 5",
-    // 다른 질문들을 여기에 추가
   ];
+
   const answerKeys = [
     "preferNatureThanCity",
     "preferNewCity",
@@ -61,6 +67,7 @@ function SurveyPage() {
     "preferDayTrip",
     "preferCheapHotelThanComfort",
   ];
+
   const answerOptions = [
     ["1", "2", "3", "4", "5"],
     ["1", "2", "3", "4", "5"],
@@ -70,55 +77,94 @@ function SurveyPage() {
     ["1", "2", "3", "4", "5"],
     ["1", "2", "3", "4", "5"],
     ["1", "2", "3", "4", "5"],
-    // 다른 질문에 대한 선택지 배열을 추가
   ];
 
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [currentTheme, setCurrentTheme] = useState(0);
-  const [answers, setAnswers] = useState([]);
-  const [currentAnswerKey, setCurrentAnswerKey] = useState(0);
-
   const handleNextQuestion = (question, answer) => {
-    const answerObject = { [question]: answer };
-    setAnswers([...answers, answerObject]);
-    if (currentQuestion <= questions.length - 1) {
+    const updatedAnswers = { ...answers, [question]: parseInt(answer, 10) };
+    setAnswers(updatedAnswers);
+
+    if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
       setCurrentTheme(currentTheme + 1);
       setCurrentAnswerKey(currentAnswerKey + 1);
-    } else {
-      console.log("수고요");
+    } else if (currentQuestion === questions.length - 1) {
+      setShowSubmit(true);
     }
   };
 
-  console.log(answers);
+  const handleSubmit = (event) => {
+    event.preventDefault(); // 폼 기본 동작 막아주는 거
+
+    const answersJSON = JSON.stringify(answers); // JSON으로 변환
+
+    console.log(answersJSON);
+    setShowResults(true);
+  };
 
   return (
     <SurveyContainer>
-      <p className="survey-title">#{themes[currentTheme]}</p>
-
-      {currentQuestion < questions.length ? (
-        <QuestionContainer>
-          <p className="question">{questions[currentQuestion]}</p>
-          <div className="answer-options">
-            {answerOptions[currentQuestion].map((option, index) => (
-              <label key={index}>
-                <SelectButton
-                  key={index}
-                  onClick={() =>
-                    handleNextQuestion(answerKeys[currentAnswerKey], option)
-                  }
-                >
-                  {option}
-                </SelectButton>
-              </label>
-            ))}
-          </div>
-        </QuestionContainer>
+      {showResults ? (
+        <div>
+          <p className="completeSurvey">수고하셨습니다!</p>
+        </div>
       ) : (
-        <p className="completeSurvey">수고하셨습니다!</p>
+        <form>
+          <p className="survey-title">#{themes[currentTheme]}</p>
+          <QuestionContainer>
+            <p className="question">{questions[currentQuestion]}</p>
+            <div className="answer-options">
+              {answerOptions[currentQuestion].map((option, index) => (
+                <label key={index}>
+                  <SelectButton
+                    key={index}
+                    onClick={() =>
+                      handleNextQuestion(answerKeys[currentAnswerKey], option)
+                    }
+                  >
+                    {option}
+                  </SelectButton>
+                </label>
+              ))}
+            </div>
+          </QuestionContainer>
+          {showSubmit && ( //showSubmit은 마지막 질문의 선택지가 눌리면 -> hadleNextQuestion 동작 -> 그때서야 true가 됨. (= 제출 버튼 생성)
+            <button type="submit" onClick={handleSubmit}>
+              제출
+            </button>
+            // 버튼 눌리면 -> handleSubmit -> setShowResults가 true가 되면서 -> 설문조사 완료했다는 페이지, 혹은 렌더링 페이지로 넘어가면 될듯
+          )}
+        </form>
       )}
     </SurveyContainer>
   );
 }
 
 export default SurveyPage;
+
+/*const handleSubmit = (event) => {
+  event.preventDefault(); // 폼의 기본 동작 방지
+
+  // answers를 JSON 형식으로 변환
+  const answersJSON = JSON.stringify(answers);
+
+  fetch('/survey', { // 서버의 URL로 바꾸세요
+    method: 'POST', // POST 메서드를 사용
+    headers: {
+      'Content-Type': 'application/json', // JSON 데이터를 보낸다고 명시
+    },
+    body: answersJSON, // JSON 형식의 데이터를 요청 본문에 넣음
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log('서버로부터 응답 받음:', data);
+      setShowResults(true); // 서버로부터 응답을 성공적으로 받았을 때 결과를 표시
+    })
+    .catch((error) => {
+      console.error('오류:', error);
+    });
+};*/
