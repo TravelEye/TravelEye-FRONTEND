@@ -1,6 +1,9 @@
 import React, { useState } from "react";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import SvgIcon from "@mui/material/SvgIcon";
+import { SubmitButton } from "./style";
 
-function Item({ todo, completed, onClick, onEditClick, isEditable }) {
+function Item({ id, todo, completed, onClick, onEditClick, isEditable }) {
   const [newTodo, setNewTodo] = useState(todo);
   const handleSubmit = (e) => {
     console.log(newTodo);
@@ -10,6 +13,7 @@ function Item({ todo, completed, onClick, onEditClick, isEditable }) {
     console.log(e.target.value);
     setNewTodo(e.target.value);
   };
+
   return (
     <li style={{ listStyleType: "none" }}>
       {isEditable ? (
@@ -20,13 +24,19 @@ function Item({ todo, completed, onClick, onEditClick, isEditable }) {
             onChange={(e) => handleEdit(e)}
             onBlur={() => onEditClick(null)}
           />
-          <button type="submit">submit</button>
+
+          <SubmitButton type="submit" onClick={() => onEditClick(null)}>
+            <SvgIcon component={CheckCircleOutlineIcon} />
+          </SubmitButton>
         </form>
       ) : (
         <>
           <input type="checkbox" checked={completed} onChange={onClick} />
           <label
-            style={{ textDecoration: completed ? "line-through" : "none" }}
+            style={{
+              marginBottom: 0,
+              textDecoration: completed ? "line-through" : "none",
+            }}
           >
             {todo}
           </label>
