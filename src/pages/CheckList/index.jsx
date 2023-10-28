@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CheckListContainer, ItemContainer } from "./style";
 import Item from "./Item";
 import SvgIcon from "@mui/material/SvgIcon";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import EditIcon from "@mui/icons-material/Edit";
-
+import { loadChecklistAPI } from "../../apis";
 import { SvgIconComponent } from "@mui/icons-material";
 import Swal from "sweetalert2";
 function CheckListPage() {
@@ -53,7 +53,18 @@ function CheckListPage() {
       )
     );
   };
-
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const checklist = await loadChecklistAPI();
+        console.log(checklist);
+        setTodos(checklist);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, []);
   return (
     <CheckListContainer>
       <form onSubmit={handleSubmit}>
