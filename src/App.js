@@ -6,7 +6,7 @@ import "./App.css";
 import MapPage from "./pages/MapPage";
 
 function App(props) {
-  return <SurveyPage />; /* <MapPage />*/
+  return <MapPage />;
 }
 
 export default App;
