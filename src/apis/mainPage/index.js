@@ -11,18 +11,26 @@ export function loadChecklistAPI() {
       throw error;
     });
 }
-
-export function updateChecklistAPI() {
+export function addChecklistAPI(title) {
   return axios
-    .put("/user/checklist")
+    .post("/user/checklist", { title })
     .then((response) => response.data)
     .catch((error) => {
       throw error;
     });
 }
-export function deleteChecklistAPI() {
+export function updateChecklistAPI(id, title, completed) {
   return axios
-    .delete("/user/checklist")
+    .put("/user/checklist", { id, title, completed })
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+}
+
+export function deleteChecklistAPI(id) {
+  return axios
+    .delete(`/user/checklist/${id}`) // Assuming the endpoint expects the ID as a part of the URL
     .then((response) => response.data)
     .catch((error) => {
       throw error;

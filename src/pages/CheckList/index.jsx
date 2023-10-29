@@ -4,8 +4,11 @@ import Item from "./Item";
 import SvgIcon from "@mui/material/SvgIcon";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import EditIcon from "@mui/icons-material/Edit";
-import { loadChecklistAPI } from "../../apis";
-import { SvgIconComponent } from "@mui/icons-material";
+import {
+  loadChecklistAPI,
+  addChecklistAPI,
+  deleteChecklistAPI,
+} from "../../apis";
 import Swal from "sweetalert2";
 function CheckListPage() {
   const data = [
@@ -17,10 +20,8 @@ function CheckListPage() {
   const [todos, setTodos] = useState(data);
   const [value, setValue] = useState("");
   const [editableId, setEditableId] = useState(null);
-
   const handleSubmit = (e) => {
-    console.log(value);
-    e.preventDefault();
+    addChecklistAPI(value);
   };
   const handleEditClick = (id) => {
     setEditableId(id === editableId ? null : id);
@@ -37,6 +38,7 @@ function CheckListPage() {
       cancelButtonText: "취소", // cancel 버튼 텍스트 지정
     }).then((result) => {
       if (result.isConfirmed) {
+        deleteChecklistAPI(id);
         Swal.fire("삭제 완료", "남은 일정 화이팅해요", "success");
       }
     });
@@ -82,26 +84,26 @@ function CheckListPage() {
       </form>
       <ul>
         {todos.map((todo) => (
-          <ItemContainer key={todo.id}>
+          <ItemContainer key={todo.checklist_id}>
             <Item
-              id={todo.id}
+              id={todo.checklist_id}
               todo={todo.title}
               completed={todo.completed}
-              onClick={() => handleClick(todo.id)}
-              onEditClick={() => handleEditClick(todo.id)}
-              isEditable={todo.id === editableId}
+              onClick={() => handleClick(todo.checklist_id)}
+              onEditClick={() => handleEditClick(todo.checklist_id)}
+              isEditable={todo.checklist_id === editableId}
             />
-            {todo.id === editableId ? (
+            {todo.checklist_id === editableId ? (
               <></>
             ) : (
               <div>
                 <SvgIcon
                   component={EditIcon}
-                  onClick={() => handleEditClick(todo.id)}
+                  onClick={() => handleEditClick(todo.checklist_id)}
                 />
                 <SvgIcon
                   component={RemoveCircleIcon}
-                  onClick={() => handleDeleteClick(todo.id)}
+                  onClick={() => handleDeleteClick(todo.checklist_id)}
                 />
               </div>
             )}
