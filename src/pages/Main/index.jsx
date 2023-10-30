@@ -9,15 +9,27 @@ import {
   CityTextWrapper,
   WeatherBackgroundWrapper,
 } from "./style";
+import { loadChecklistAPI, updateChecklistAPI } from "../../apis";
+import { ItemContainer } from "../CheckList/style";
+import Item from "../CheckList/Item";
 function MainPage() {
   const [weather, setWeather] = useState({
     description: "",
     temp: "",
     icon: "",
   });
+  const data = [
+    { id: 0, title: "선택 1", completed: true },
+    { id: 1, title: "선택 2", completed: false },
+    { id: 2, title: "선택 3", completed: true },
+    { id: 3, title: "선택 4", completed: false },
+  ];
   const [user, setUser] = useState("김지은");
-  const [city, setCity] = useState("London");
-
+  const [city, setCity] = useState("Seoul");
+  const [todos, setTodos] = useState(data);
+  const handleClick = (id, title, completed) => {
+    updateChecklistAPI(id, title, !completed);
+  };
   useEffect(() => {
     const fetchWeather = async () => {
       try {
@@ -38,6 +50,18 @@ function MainPage() {
 
     fetchWeather();
   }, [city]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const checklist = await loadChecklistAPI();
+        console.log(checklist);
+        setTodos(checklist);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, []);
   return (
     <MainPageContainer>
       <UserContainer>{user}님</UserContainer>
@@ -50,7 +74,18 @@ function MainPage() {
           </WeatherBackgroundWrapper>
         </WeatherContainer>
       )}
-      <ChecklistContainer>Checklist</ChecklistContainer>
+      <ChecklistContainer>
+        {todos.map(({ checklist_id: id, title, completed }) => (
+          <ItemContainer key={id}>
+            <Item
+              id={id}
+              todo={title}
+              completed={completed}
+              onClick={() => handleClick(id, title, completed)}
+            />
+          </ItemContainer>
+        ))}
+      </ChecklistContainer>
       <FoodlistContainer>Foodlist</FoodlistContainer>
     </MainPageContainer>
   );
