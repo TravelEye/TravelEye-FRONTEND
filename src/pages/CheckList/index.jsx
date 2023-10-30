@@ -8,6 +8,7 @@ import {
   loadChecklistAPI,
   addChecklistAPI,
   deleteChecklistAPI,
+  updateChecklistAPI,
 } from "../../apis";
 import Swal from "sweetalert2";
 function CheckListPage() {
@@ -47,13 +48,8 @@ function CheckListPage() {
     console.log(e.target.value);
     setValue(e.target.value);
   };
-  const handleClick = (id) => {
-    console.log(id);
-    setTodos((prevTodos) =>
-      prevTodos.map((todo) =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo
-      )
-    );
+  const handleClick = (id, title, completed) => {
+    updateChecklistAPI(id, title, !completed);
   };
   useEffect(() => {
     const fetchData = async () => {
@@ -83,27 +79,27 @@ function CheckListPage() {
         </div>
       </form>
       <ul>
-        {todos.map((todo) => (
-          <ItemContainer key={todo.checklist_id}>
+        {todos.map(({ checklist_id: id, title, completed }) => (
+          <ItemContainer key={id}>
             <Item
-              id={todo.checklist_id}
-              todo={todo.title}
-              completed={todo.completed}
-              onClick={() => handleClick(todo.checklist_id)}
-              onEditClick={() => handleEditClick(todo.checklist_id)}
-              isEditable={todo.checklist_id === editableId}
+              id={id}
+              todo={title}
+              completed={completed}
+              onClick={() => handleClick(id, title, completed)}
+              onEditClick={() => handleEditClick(id)}
+              isEditable={id === editableId}
             />
-            {todo.checklist_id === editableId ? (
+            {id === editableId ? (
               <></>
             ) : (
               <div>
                 <SvgIcon
                   component={EditIcon}
-                  onClick={() => handleEditClick(todo.checklist_id)}
+                  onClick={() => handleEditClick(id)}
                 />
                 <SvgIcon
                   component={RemoveCircleIcon}
-                  onClick={() => handleDeleteClick(todo.checklist_id)}
+                  onClick={() => handleDeleteClick(id)}
                 />
               </div>
             )}

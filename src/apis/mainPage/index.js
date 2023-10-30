@@ -21,7 +21,7 @@ export function addChecklistAPI(title) {
 }
 export function updateChecklistAPI(id, title, completed) {
   return axios
-    .put("/user/checklist", { id, title, completed })
+    .put(`/user/checklist/${id}`, { title, completed })
     .then((response) => response.data)
     .catch((error) => {
       throw error;
@@ -30,7 +30,7 @@ export function updateChecklistAPI(id, title, completed) {
 
 export function deleteChecklistAPI(id) {
   return axios
-    .delete(`/user/checklist/${id}`) // Assuming the endpoint expects the ID as a part of the URL
+    .delete(`/user/checklist/${id}`)
     .then((response) => response.data)
     .catch((error) => {
       throw error;
