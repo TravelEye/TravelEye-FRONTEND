@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import Map from "./Map";
+import MapRestaurant from "./MapRestaurant";
+import MapPartner from "./MapPartner";
 import styled from "styled-components";
 
 const adContainer = styled.div`
   margin: 20%;
 `;
+
 const MapContainer = styled.div`
   padding: 20px 20px 20px 20px;
   background-color: rgb(41, 194, 156);
@@ -39,7 +41,8 @@ const MapPage = () => {
         동행 모드
       </button>
       <adContainer>
-        <Map />
+        {isRestaurantMode ? <MapRestaurant /> : null}
+        {isPartnerMode ? <MapPartner /> : null}
       </adContainer>
     </MapContainer>
   );

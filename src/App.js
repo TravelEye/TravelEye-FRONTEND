@@ -6,7 +6,16 @@ import "./App.css";
 import MapPage from "./pages/MapPage";
 
 function App(props) {
-  return <MapPage />;
+  const [coordinates, setCoordinates] = useState({ lat: 0, lng: 0 });
+  const [bounds, setBounds] = useState(null);
+  return (
+    /*<SurveyPage />*/
+    <MapPage
+      setCoordinates={setCoordinates}
+      setBounds={setBounds}
+      coordinates={coordinates}
+    />
+  );
 }
 
 export default App;
