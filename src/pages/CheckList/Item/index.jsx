@@ -11,9 +11,9 @@ function Item({ id, todo, completed, onClick, onEditClick, isEditable }) {
     setNewTodo(e.target.value);
   };
   const handleSubmit = (e) => {
-    e.preventDefault();
     onEditClick(null);
     updateChecklistAPI(id, newTodo, completed); //내용만 바뀐 경우
+    e.preventDefault();
   };
 
   return (

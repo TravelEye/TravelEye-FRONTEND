@@ -75,7 +75,7 @@ function MainPage() {
         </WeatherContainer>
       )}
       <ChecklistContainer>
-        {todos.map(({ checklist_id: id, title, completed }) => (
+        {todos.map(({ id, title, completed }) => (
           <ItemContainer key={id}>
             <Item
               id={id}

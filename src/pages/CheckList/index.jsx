@@ -22,6 +22,7 @@ function CheckListPage() {
   const [value, setValue] = useState("");
   const [editableId, setEditableId] = useState(null);
   const handleSubmit = (e) => {
+    console.log(value);
     addChecklistAPI(value);
   };
   const handleEditClick = (id) => {
@@ -79,7 +80,7 @@ function CheckListPage() {
         </div>
       </form>
       <ul>
-        {todos.map(({ checklist_id: id, title, completed }) => (
+        {todos.map(({ id, title, completed }) => (
           <ItemContainer key={id}>
             <Item
               id={id}
