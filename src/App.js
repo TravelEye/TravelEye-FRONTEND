@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import MainPage from "./pages/Main";
 import CheckListPage from "./pages/CheckList";
 import SurveyPage from "./pages/Survey/SurveyPage";
-import MapPage from "./pages/Map/Map";
+import MapPage from "./pages/Map/MapPage";
 import SignUpPage from "./pages/SignUpPage";
 import SignInPage from "./pages/SignInPage";
 import "./App.css";

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import MapRestaurant from "./MapRestaurant";
-import MapPartner from "./MapPartner";
+import MapRestaurant from "../MapRestaurant";
+import MapPartner from "../MapPartner";
 import styled from "styled-components";
 
 const adContainer = styled.div`
