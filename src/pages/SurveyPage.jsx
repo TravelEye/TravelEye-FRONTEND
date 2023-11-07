@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 const SurveyContainer = styled.div`
   padding: 20px 20px 20px 20px;
@@ -34,6 +35,7 @@ function SurveyPage() {
   const [showResults, setShowResults] = useState(false);
   const [answers, setAnswers] = useState({});
   const [currentAnswerKey, setCurrentAnswerKey] = useState(0);
+  const navigate = useNavigate();
 
   const themes = [
     "목적지 스타일",
@@ -99,6 +101,9 @@ function SurveyPage() {
 
     console.log(answersJSON);
     setShowResults(true);
+    setTimeout(() => {
+      navigate("/map");
+    }, 3000);
   };
 
   return (
