@@ -3,6 +3,8 @@ import MainPage from "./pages/Main";
 import CheckListPage from "./pages/CheckList";
 import SurveyPage from "./pages/Survey/SurveyPage";
 import MapPage from "./pages/Map/Map";
+import SignUpPage from "./pages/SignUpPage";
+import SignInPage from "./pages/SignInPage";
 import "./App.css";
 import { RecoilRoot } from "recoil";
 import {
@@ -20,6 +22,8 @@ function Content() {
         <Route exact path="/map" element={<MapPage />} />
         <Route exact path="/survey" element={<SurveyPage />} />
         <Route exact path="/checklist" element={<CheckListPage />} />
+        <Route path="/main" element={<MainPage />} />
+        <Route path="/signup" element={<SignUpPage />} />
       </Routes>
     </>
   );
