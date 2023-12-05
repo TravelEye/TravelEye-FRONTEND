@@ -1,0 +1,28 @@
+.wrapper {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  z-index: 2;
+}
+
+nav {
+  overflow: hidden;
+  border-top: 2px solid grey;
+}
+
+nav > div {
+  text-align: center;
+  float: left;
+  width: 33%;
+
+  height: 60px;
+}
+
+.Map-link {
+  &.active {
+    background-image: url("../assets/images/Map_active.png");
+    background-size: contain;
+  }
+}

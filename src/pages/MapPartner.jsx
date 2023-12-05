@@ -3,7 +3,7 @@ import GoogleMapReact from "google-map-react";
 import { Paper, Typography, useMediaQuery } from "@material-ui/core";
 import axios from "axios";
 
-const my_api_key = "";
+const my_api_key = "AIzaSyDwnlbxENxKY3ubbVjDBtH_x4GOZy_2fSU";
 
 const MapPartner = () => {
   const plans = [
@@ -99,6 +99,24 @@ const MapPartner = () => {
   }, [mapCenter, mapZoom]);
 
   const googleMapKey = `${mapCenter.lat}_${mapCenter.lng}_${mapZoom}`;
+
+  const x = 12.34;
+  const y = 56.78;
+  const apiUrl = `/map/recommend?x=${x}&y=${y}`;
+
+  fetch(apiUrl)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`GET 에러 발생. Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data);
+    })
+    .catch((error) => {
+      console.error("Fetch error:", error);
+    });
 
   return (
     <div style={{ height: "400px", width: "100%" }}>
