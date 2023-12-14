@@ -3,7 +3,7 @@ import GoogleMapReact from "google-map-react";
 import { Paper, Typography, useMediaQuery } from "@material-ui/core";
 import axios from "axios";
 
-const my_api_key = "AIzaSyDwnlbxENxKY3ubbVjDBtH_x4GOZy_2fSU";
+const my_api_key = "";
 
 const MapPartner = () => {
   const plans = [
