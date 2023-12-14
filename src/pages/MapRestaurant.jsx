@@ -125,7 +125,7 @@ const MapRestaurant = () => {
   const googleMapKey = `${mapCenter.lat}_${mapCenter.lng}_${mapZoom}`;
 
   return (
-    <div style={{ height: "400px", width: "100%", position: "relative" }}>
+    <div style={{ height: "100%", width: "100%", position: "relative" }}>
       <GoogleMapReact
         bootstrapURLKeys={{
           key: `${my_api_key}`,

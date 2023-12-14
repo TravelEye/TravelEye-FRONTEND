@@ -9,22 +9,80 @@ import SignInPage from "./pages/SignInPage";
 import BottomNav from "./pages/BottomNav";
 import Mypage from "./pages/Mypage";
 import LandingPage from "./pages/LandingPage";
-import ProfilePage from "./pages/Profile";
+import MyProfilePage from "./pages/MyProfile";
 import SplashPage from "./pages/StartPage";
 import NewTrip from "./pages/NewTrip";
+import MakeTripPage from "./pages/MakeTripPage";
+import FixMyProfilePage from "./pages/FixMyProfile";
+import UserProfilePage from "./pages/UserProfile";
+import NavermyMap from "./pages/NaverMap";
+
 function App(props) {
   return (
     <Router>
-      <BottomNav />
       <Routes>
+        <Route path="/navermap" element={<NavermyMap />} />
+
         <Route path="/" element={<SignInPage />} />
         <Route path="/survey" element={<SurveyPage />} />
-        <Route path="/map" element={<MapPage />} />
-        <Route path="/landing" element={<LandingPage />} />{" "}
         <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/mypage" element={<Mypage />} />
-        <Route path="/profile" element={<ProfilePage />} />\
-        <Route path="/newtrip" element={<NewTrip />} />
+        <Route
+          path="/map"
+          element={
+            <>
+              <MapPage />
+              <BottomNav />
+            </>
+          }
+        />
+        <Route
+          path="/landing"
+          element={
+            <>
+              <LandingPage />
+              <BottomNav />
+            </>
+          }
+        />
+        <Route
+          path="/mypage"
+          element={
+            <>
+              <Mypage />
+              <BottomNav />
+            </>
+          }
+        />
+        <Route path="/myprofile" element={<MyProfilePage />} />
+        <Route path="/fixprofile" element={<FixMyProfilePage />} />
+        <Route path="/userprofile" element={<UserProfilePage />} />
+        <Route
+          path="/newtrip"
+          element={
+            <>
+              <NewTrip />
+              <BottomNav />
+            </>
+          }
+        />
+        <Route
+          path="/maketrip"
+          element={
+            <>
+              <MakeTripPage />
+              <BottomNav />
+            </>
+          }
+        />
+        <Route
+          path="/newtrip"
+          element={
+            <>
+              <NewTrip />
+              <BottomNav />
+            </>
+          }
+        />
       </Routes>
     </Router>
   );

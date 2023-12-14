@@ -1,43 +1,52 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import ProfilePage from "./Profile";
 import { Link, useNavigate } from "react-router-dom";
 import sample from "../assets/images/sample.png";
-import block from "../assets/images/block.png";
-import Fixmypage from "../assets/images/Fixmypage.png";
-import Gopartner from "../assets/images/Gopartner.png";
-import message from "../assets/images/message.png";
+import {
+  TitleBold,
+  SubTitleMedium,
+  BodyMedium15,
+  BodyMedium12,
+  BodyBold15,
+  BodyBold12,
+} from "./fonts.js";
 
-const RoundedRectangle = styled.div`
+const HeaderContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  background-color: #4caf50;
-  box-shadow: 0px 6px 13px rgba(0, 0, 0, 0.39);
-  color: white;
+  background-color: white;
+  box-shadow: 0px 2px 5px 0px #00000040;
+  color: black;
+  height: 70px;
   text-align: center;
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
-  padding: 10px;
-  margin-bottom: 20px;
+  font-family: KoPubWorldDotum;
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: -0.5px;
+  line-height: 30px;
 `;
 
 const MypageContainer = styled.div`
   background-color: white;
-  padding: 20px;
+  padding-bottom 60px;
   z-index: 1;
+  position: relative;
 `;
 
-const TopHalf = styled.div`
-  flex: 1;
-  background-image: url(${sample});
-  background-size: cover;
+const MyInformationContainer = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  padding-bottom: 20px;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px;
 `;
+
 const ProfilImageContainer = styled.div`
-  width: 40px;
-  height: 40px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   overflow: hidden;
   background: #ccc;
@@ -48,81 +57,62 @@ const CircularImageElement = styled.img`
   object-fit: cover;
 `;
 
-const ArrowButton = styled.div`
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  width: 25px;
-  height: 25px;
-  background-color: transparent;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  cursor: pointer;
-
-  &::before {
-    content: "←";
-    font-size: 30px;
-    color: white;
-  }
-`;
 const OperatingContainer = styled.div`
   background: #ffffff;
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 0px 5px 0px #00000040;
   border-radius: 20px;
+  margin: 10px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const ProfileButton = styled.button``;
-const BottomHalf = styled.div`
-  flex: 1;
-  display: flex;
-  justify-content: space-between;
-  padding: 20px;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-`;
-
-const WhiteBox = styled.div`
-  flex: 1;
-  width: 100%;
-
-  background-color: white;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  padding: 20px;
-`;
-const RoundRectangle = styled.div`
-  background-color: white;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
-  padding: 20px;
-`;
 
 const Mypage = () => {
   const navigate = useNavigate();
   const handleProfileButtonClick = () => {
-    navigate("/profile");
+    navigate("/myprofile");
   };
+  const initialnickname = "맑눈광";
+  const initialintroduction =
+    "젊은 패기로 신속 정확하게 팩트를 전달한다 안녕하세요 인턴기자 주.현.영입니다. 질문 하나 드려도 될까요?";
 
   return (
     <MypageContainer>
-      <RoundedRectangle>여행 관리</RoundedRectangle>
-      <ProfilImageContainer>
-        <CircularImageElement src={sample} alt="Circular" />
-      </ProfilImageContainer>
-      <p>닉네임</p>
-      <p>자기소개 글</p>
-      <ProfileButton onClick={handleProfileButtonClick}>
-        상세 보기
-      </ProfileButton>
-      <OperatingContainer>1:1 문의 남기기</OperatingContainer>
-      <OperatingContainer>개인정보처리방침</OperatingContainer>
-      <OperatingContainer>이용약관</OperatingContainer>
-      <OperatingContainer>버전정보</OperatingContainer>
+      <HeaderContainer>마이페이지</HeaderContainer>
+      <MyInformationContainer>
+        <ProfilImageContainer>
+          <CircularImageElement src={sample} alt="Circular" />
+        </ProfilImageContainer>
+        <TitleBold style={{ textAlign: "center" }}>{initialnickname}</TitleBold>
+        <BodyMedium12 style={{ textAlign: "center" }}>
+          {initialintroduction}
+        </BodyMedium12>
+        <BodyBold12
+          style={{ textAlign: "center", color: "#999999" }}
+          onClick={handleProfileButtonClick}
+        >
+          상세 보기
+        </BodyBold12>
+      </MyInformationContainer>
+
+      <OperatingContainer>
+        <SubTitleMedium>쪽지함</SubTitleMedium>
+      </OperatingContainer>
+      <OperatingContainer>
+        <SubTitleMedium>1:1 문의 남기기</SubTitleMedium>
+      </OperatingContainer>
+      <OperatingContainer>
+        <SubTitleMedium>개인정보처리방침</SubTitleMedium>
+      </OperatingContainer>
+      <OperatingContainer>
+        <SubTitleMedium>이용약관</SubTitleMedium>
+      </OperatingContainer>
+      <OperatingContainer>
+        <SubTitleMedium>버전정보</SubTitleMedium>
+      </OperatingContainer>
     </MypageContainer>
   );
 };

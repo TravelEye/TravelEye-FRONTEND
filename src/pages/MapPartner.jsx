@@ -119,7 +119,7 @@ const MapPartner = () => {
     });
 
   return (
-    <div style={{ height: "400px", width: "100%" }}>
+    <div style={{ height: "100%", width: "100%" }}>
       <GoogleMapReact
         bootstrapURLKeys={{
           key: `${my_api_key}`,

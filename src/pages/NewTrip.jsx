@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import ProfilePage from "./Profile";
+import MyProfilePage from "./MyProfile";
 import { Link, useNavigate } from "react-router-dom";
 import sample from "../assets/images/sample.png";
 import block from "../assets/images/block.png";
@@ -105,7 +105,7 @@ const RoundRectangle = styled.div`
 const NewTrip = () => {
   const navigate = useNavigate();
   const handleProfileButtonClick = () => {
-    navigate("/profile");
+    navigate("/myprofile");
   };
 
   return (

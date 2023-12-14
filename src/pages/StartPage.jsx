@@ -13,7 +13,7 @@ const SplashContainer = styled.div`
 
 const SplashImage = styled.img`
   max-width: 100%;
-  max-height: 50vh; /* Adjust the height as needed */
+  max-height: 50vh;
   margin-bottom: 20px;
 `;
 
