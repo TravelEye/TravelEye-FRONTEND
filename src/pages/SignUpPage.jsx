@@ -136,7 +136,8 @@ function SignUpPage() {
   const [isCheckingEmail, setIsCheckingEmail] = useState(false);
   const [isUsableEmail, SetIsUsableEmail] = useState();
   const [error, setErrorMsg] = useState("");
-
+  const [selectedAge, setSelectedAge] = useState(10);
+  const [selectedSex, setSelectedSex] = useState("MALE"); // Set the initial value as needed
   /*설문조사용*/
 
   const [selectedReply, setSelectedReply] = useState(null);
@@ -158,7 +159,7 @@ function SignUpPage() {
     preferManyPhotos: 1,
     preferNatureThanCity: 1,
     preferNewCity: 1,
-    preferTightSchedule: 1,
+    preferTightSchedule: 3, //설문조사에는 없으나 백엔드에는 존재
   });
   const onNicknameHandler = (e) => {
     setData((prevData) => ({ ...prevData, nickname: e.target.value }));
@@ -231,8 +232,6 @@ function SignUpPage() {
   };
 
   const AgeDropdown = () => {
-    const [selectedAge, setSelectedAge] = useState(10);
-
     const onAgeHandler = (e) => {
       setSelectedAge(e.target.value);
       setData((prevData) => ({ ...prevData, age: e.target.value }));
@@ -259,8 +258,6 @@ function SignUpPage() {
     );
   };
   const SexDropdown = () => {
-    const [selectedSex, setSelectedSex] = useState("MALE"); // Set the initial value as needed
-
     const onGenderHandler = (e) => {
       setSelectedSex(e.target.value);
       setData((prevData) => ({ ...prevData, gender: e.target.value }));
@@ -423,12 +420,12 @@ function SignUpPage() {
                       setSelectedReply(index + 1);
                     }}
                   />
-                  {index == 1 && (
+                  {index == 0 && (
                     <Replytext>
                       <BodyBold12>자연 휴양지</BodyBold12>
                     </Replytext>
                   )}
-                  {index == 5 && (
+                  {index == 4 && (
                     <Replytext>
                       <BodyBold12>도시</BodyBold12>
                     </Replytext>
@@ -482,12 +479,12 @@ function SignUpPage() {
                       setSelectedReply(index + 1);
                     }}
                   />
-                  {index == 1 && (
+                  {index == 0 && (
                     <Replytext>
                       <BodyBold12>한적한 여행지</BodyBold12>
                     </Replytext>
                   )}
-                  {index == 5 && (
+                  {index == 4 && (
                     <Replytext>
                       <BodyBold12>핫 플레이스</BodyBold12>
                     </Replytext>
@@ -537,12 +534,12 @@ function SignUpPage() {
                       setSelectedReply(index + 1);
                     }}
                   />
-                  {index == 1 && (
+                  {index == 0 && (
                     <Replytext>
                       <BodyBold12>프리스타일</BodyBold12>
                     </Replytext>
                   )}
-                  {index == 5 && (
+                  {index == 4 && (
                     <Replytext>
                       <BodyBold12>알찬 계획</BodyBold12>
                     </Replytext>
@@ -592,12 +589,12 @@ function SignUpPage() {
                       setSelectedReply(index + 1);
                     }}
                   />
-                  {index == 1 && (
+                  {index == 0 && (
                     <Replytext>
                       <BodyBold12>중요하지 않음</BodyBold12>
                     </Replytext>
                   )}
-                  {index == 5 && (
+                  {index == 4 && (
                     <Replytext>
                       <BodyBold12>사진 촬영 필수</BodyBold12>
                     </Replytext>
@@ -647,12 +644,12 @@ function SignUpPage() {
                       setSelectedReply(index + 1);
                     }}
                   />
-                  {index == 1 && (
+                  {index == 0 && (
                     <Replytext>
                       <BodyBold12>관광지 방문</BodyBold12>
                     </Replytext>
                   )}
-                  {index == 5 && (
+                  {index == 4 && (
                     <Replytext>
                       <BodyBold12>식도락 여행</BodyBold12>
                     </Replytext>

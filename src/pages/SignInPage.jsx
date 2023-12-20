@@ -88,7 +88,9 @@ function SignInPage(props) {
       password: Password,
     };
     try {
+      console.log(data);
       const response = await loginAPI(data);
+
       if (response) {
         navigate("/landing");
       }
