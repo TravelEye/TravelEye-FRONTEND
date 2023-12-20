@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { connect } from "react-redux";
-import axios from "axios";
-import { useDispatch } from "react-redux";
-import { loginUser } from "../_actions/user_action";
-import { signupAPI } from "../apis";
+import { signupAPI, checkEmailAPI } from "../apis";
 import { useNavigate } from "react-router-dom";
-import { validUser } from "../_actions/user_action"; // Import the validUser array
+import { BsCheck } from "react-icons/bs";
 import {
   RightArrowButton,
   RightArrowIcon,
@@ -22,15 +18,40 @@ import {
 } from "./MakeTripPage";
 import splash from "../assets/images/splash.png";
 import RightArrow from "../assets/images/RightArrow.png";
+const CheckIconCircle = styled.div`
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+  .checkIcon {
+    width: 25px;
+    height: 25px;
+    background: ${(props) => {
+        if (props.value === true) {
+          return "green";
+        } else if (props.value === false) {
+          return "red";
+        } else {
+          return "#d3d3d3"; // light gray for null value
+        }
+      }}
+      0% 0% no-repeat padding-box;
+    border-radius: 50%;
+    margin-left: 10px;
+    margin-right: 10px;
+    box-shadow: inset 0px 1px 3px #00000029;
+    border-radius: 15px;
+    color: white;
+    opacity: 1;
+  }
+`;
 const DropSet = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  justify-content: center;
 `;
 const AgeOption = styled.select`
   height: 35px;
   margin-left: 10%;
-  margin-right: 10%;
+
   border-radius: 20px;
   font-family: "KopubWorldDotum";
   font-size: 20px;
@@ -47,8 +68,7 @@ const AgeOption = styled.select`
 `;
 const SexOption = styled.select`
   height: 35px;
-  margin-left: 10%;
-  margin-right: 10%;
+  margin-left: 20px;
   border-radius: 20px;
   font-family: "KopubWorldDotum";
   font-size: 20px;
@@ -67,7 +87,10 @@ const SexOption = styled.select`
 function SignUpPage() {
   const [registerSuccess, setRegisterSuccess] = useState(false);
   const [checkPW, setCheckPW] = useState(true);
-
+  const [isEmailChecked, setIsEmailChecked] = useState(false);
+  const [isCheckingEmail, setIsCheckingEmail] = useState(false);
+  const [isUsableEmail, SetIsUsableEmail] = useState();
+  const [error, setErrorMsg] = useState("");
   const navigate = useNavigate();
 
   const [data, setData] = useState({
@@ -89,18 +112,49 @@ function SignUpPage() {
   });
   const onNicknameHandler = (e) => {
     setData((prevData) => ({ ...prevData, nickname: e.target.value }));
-    console.log(e.target.value);
   };
   const onEmailHandler = (e) => {
     setData((prevData) => ({ ...prevData, email: e.target.value }));
+    setIsEmailChecked(false);
+    setIsCheckingEmail(true);
   };
+  useEffect(() => {
+    let timer;
+
+    const checkEmail = async () => {
+      if (isCheckingEmail) {
+        timer = setTimeout(async () => {
+          try {
+            const isDuplicate = await checkEmailAPI(data.email);
+            // console.log(isDuplicate);
+            setIsEmailChecked(true);
+            setIsCheckingEmail(false);
+            if (isDuplicate.data) {
+              SetIsUsableEmail(false);
+              setErrorMsg("이미 사용하고 있는 이메일입니다");
+            } else {
+              SetIsUsableEmail(true);
+              setErrorMsg("");
+            }
+          } catch (error) {
+            console.error("Error checking email:", error);
+          }
+        }, 1000);
+      }
+    };
+
+    checkEmail();
+
+    // Clear the timer if the user continues typing
+    return () => clearTimeout(timer);
+  }, [data.email, isCheckingEmail]);
+
   const onPasswordHandler = (e) => {
     setData((prevData) => ({ ...prevData, password: e.target.value }));
   };
   const onPWcheckHandler = (event) => {
     const confirmPassword = event.currentTarget.value;
-    console.log(data.password);
-    console.log(confirmPassword);
+
     if (data.password !== "" && confirmPassword !== "") {
       if (data.password === confirmPassword) {
         setCheckPW(true);
@@ -224,12 +278,21 @@ function SignUpPage() {
           <QuestionTitle>
             트래블아이와 함께할 <br /> 이메일 주소를 정해주세요!
           </QuestionTitle>
-          <InputContainer
-            type="text"
-            value={data.email}
-            onChange={onEmailHandler}
-            placeholder="이메일을 입력해주세요."
-          />
+          <div style={{ display: "flex" }}>
+            <InputContainer
+              type="text"
+              value={data.email}
+              onChange={onEmailHandler}
+              placeholder="이메일을 입력해주세요."
+              required={true}
+            />
+            <CheckIconCircle value={isUsableEmail}>
+              <BsCheck className="checkIcon" />
+            </CheckIconCircle>
+          </div>
+          {error && (
+            <div style={{ textAlign: "center", color: "red" }}>{error}</div>
+          )}
         </StageContainer>
       );
       break;
