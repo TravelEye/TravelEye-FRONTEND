@@ -1,7 +1,7 @@
 import { React, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-
+import axios from "axios";
 import alert1 from "../assets/images/alert1.png";
 import splash from "../assets/images/splash.png";
 import search from "../assets/images/search.png";
@@ -367,6 +367,69 @@ const MakeTripPage = () => {
     const day = date.getDate().toString().padStart(2, "0");
     return `${year}년 ${month}월 ${day}일`;
   };
+  const createTripData = () => {
+    const formattedStartDate = date[0]
+      ? `${date[0].getFullYear()}-${(date[0].getMonth() + 1)
+          .toString()
+          .padStart(2, "0")}-${date[0]
+          .getDate()
+          .toString()
+          .padStart(2, "0")}T12:00:00`
+      : null;
+
+    const formattedEndDate = date[1]
+      ? `${date[1].getFullYear()}-${(date[1].getMonth() + 1)
+          .toString()
+          .padStart(2, "0")}-${date[1]
+          .getDate()
+          .toString()
+          .padStart(2, "0")}T18:30:00`
+      : null;
+
+    const tripData = {
+      title: tripname,
+      country: tripdestination.split(", ")[1],
+      city: tripdestination.split(", ")[2],
+      startDate: formattedStartDate,
+      endDate: formattedEndDate,
+      memos: [
+        { landmarkId: 2, memo: "맛집가기", date: "2023-01-01T12:00:00" },
+        { landmarkId: 3, memo: "사진많이 찍기", date: "2023-01-01T12:00:00" },
+      ],
+    };
+
+    return tripData;
+  };
+
+  const handleFinishButtonClick = async () => {
+    const tripData = createTripData();
+    console.log(tripData);
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:80/trip/new",
+        tripData,
+        {
+          headers: {
+            Authorization:
+              "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMkBnbWFpbC5jb20iLCJhdXRoIjoiVVNFUiIsImV4cCI6MTcwMzE0NDM4N30.MWRiS8ixj5yRg8-ayydUQgUImnrA9_HRFYJik4iZ8fUHPDDhySEqw0K-NUR_1__I2jXuev7UZC6fWCom_U4uoQ",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("서버 응답:", response.data);
+    } catch (error) {
+      console.error("서버 요청 중 오류 발생:", error);
+    }
+    navigate("/landing");
+  };
+  const handleButtonClick = async () => {
+    if (step === 3) {
+      await handleFinishButtonClick();
+    } else {
+      moveToNextStepButtonClick();
+    }
+  };
 
   switch (step) {
     case 0:
@@ -522,7 +585,7 @@ const MakeTripPage = () => {
 
       {currentStepComponent}
       <RightArrowButton>
-        <RightArrowIcon src={RightArrow} onClick={moveToNextStepButtonClick} />
+        <RightArrowIcon src={RightArrow} onClick={handleButtonClick} />
       </RightArrowButton>
     </LandingContainer>
   );

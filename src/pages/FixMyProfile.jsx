@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
-
+import { useNavigate, useLocation } from "react-router-dom";
+import axios from "axios";
 import sample from "../assets/images/sample.png";
 import Fixmypage from "../assets/images/Fixmypage.png";
 import kakaoicon from "../assets/images/kakaoicon.png";
@@ -155,18 +155,42 @@ const SNSIcon = styled.img`
 `;
 const FixMyProfilePage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const information = location?.state?.information || null;
+  console.log(information);
 
   const handleArrowButtonClick = () => {
     navigate(-1);
   };
-  const handleFixButtonClick = () => {
-    navigate(-1);
+  const handleFixButtonClick = async () => {
+    try {
+      const response = await axios.put(
+        "http://127.0.0.1:80/member/myinfo",
+        {
+          nickname: username,
+          introduction: introduction,
+        },
+        {
+          headers: {
+            Authorization:
+              "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMkBnbWFpbC5jb20iLCJhdXRoIjoiVVNFUiIsImV4cCI6MTcwMzE0NDM4N30.MWRiS8ixj5yRg8-ayydUQgUImnrA9_HRFYJik4iZ8fUHPDDhySEqw0K-NUR_1__I2jXuev7UZC6fWCom_U4uoQ",
+            "Content-type": "application/json",
+          },
+        }
+      );
+
+      console.log(response.data);
+
+      navigate(-2);
+    } catch (error) {
+      console.error("Error updating profile:", error);
+    }
   };
-  const [username, SetUsername] = useState("");
+  const [username, SetUsername] = useState(information.nickname);
   const handleusername = (e) => {
     SetUsername(e.target.value);
   };
-  const [introduction, SetIntroduction] = useState("");
+  const [introduction, SetIntroduction] = useState(information.introduction);
   const handleintroduction = (e) => {
     SetIntroduction(e.target.value);
   };
@@ -192,7 +216,7 @@ const FixMyProfilePage = () => {
             type="text"
             value={username}
             onChange={handleusername}
-            placeholder="{유저닉네임}"
+            placeholder={information.nickname}
           />
           <IntroductionContainer
             type="text"

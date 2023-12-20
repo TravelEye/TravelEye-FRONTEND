@@ -12,6 +12,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.6.2",
+    "date-fns": "^3.0.1",
     "framer-motion": "^10.16.12",
     "google-map-react": "^2.2.1",
     "google-maps-react": "^2.0.6",

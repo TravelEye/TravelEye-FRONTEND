@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import sample from "../assets/images/sample.png";
 import AddPlan from "../assets/images/AddPlan.png";
@@ -11,7 +11,7 @@ import {
   BodyBold15,
   BodyBold12,
 } from "./fonts.js";
-
+import axios from "axios";
 const LandingContainer = styled.div`
   background-color: white;
   z-index: 1;
@@ -49,6 +49,7 @@ const TripContainer = styled.div`
   margin: 20px;
   display: flex;
   flex-direction: column;
+  cursor: pointer;
 `;
 
 const CityInfo = styled.div`
@@ -143,19 +144,42 @@ const LandingPage = () => {
   const handleMakeTripButtonClick = () => {
     navigate("/maketrip");
   };
+  const [trips, setTrips] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("http://127.0.0.1:80/trip/all", {
+          headers: {
+            Authorization:
+              "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMkBnbWFpbC5jb20iLCJhdXRoIjoiVVNFUiIsImV4cCI6MTcwMzE0NDM4N30.MWRiS8ixj5yRg8-ayydUQgUImnrA9_HRFYJik4iZ8fUHPDDhySEqw0K-NUR_1__I2jXuev7UZC6fWCom_U4uoQ",
+          },
+        });
+
+        setTrips(response.data.data);
+        console.log(trips);
+      } catch (error) {
+        console.error("Error fetching trip data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+  const handleTripClick = (index) => {
+    navigate("/viewTrip", { state: { tripData: trips[index] } });
+  };
 
   return (
     <LandingContainer>
       <HeaderContainer>여행 관리</HeaderContainer>
-      {tripData.map((trip, index) => (
-        <TripContainer key={index}>
+      {trips.map((trip, index) => (
+        <TripContainer key={index} onClick={() => handleTripClick(index)}>
           <CityInfo>
-            <BodyBold12>{trip.cityName}</BodyBold12>
+            <BodyBold12>{trip.country}</BodyBold12>
           </CityInfo>
           <TripInfo>
-            <BodyBold15>{trip.nickname}</BodyBold15>
+            <BodyBold15>{trip.title}</BodyBold15>
             <TripExpanationContainer>
-              <BodyMedium12>{trip.description}</BodyMedium12>
+              <BodyMedium12>{trip.country}</BodyMedium12>
             </TripExpanationContainer>
             <StateContainer>
               <PartnerStateContainer>

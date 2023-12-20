@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate, useLocation } from "react-router-dom";
-
+import axios from "axios";
 import sample from "../assets/images/sample.png";
-import Fixmypage from "../assets/images/Fixmypage.png";
+import alert1 from "../assets/images/alert1.png";
+import search from "../assets/images/search.png";
 import landmark_pin from "../assets/images/landmark_pin.png";
 import LeftArrow from "../assets/images/LeftArrow.png";
 import trashcan from "../assets/images/trashcan.png";
@@ -15,6 +16,12 @@ import {
   BodyBold15,
   BodyBold12,
 } from "./fonts.js";
+import { format } from "date-fns";
+
+const LandmarkSet = [
+  "아시아, 대한민국, 서울, 만장굴",
+  "아시아, 대한민국, 서귀포, 한라산",
+];
 
 const ViewTripContainer = styled.div`
   display: flex;
@@ -23,40 +30,6 @@ const ViewTripContainer = styled.div`
   position: relative;
   padding-bottom: 60px;
 `;
-const HeaderContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  background-color: white;
-  box-shadow: 0px 2px 5px 0px #00000040;
-  color: black;
-  height: 70px;
-  text-align: center;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
-  font-family: KoPubWorldDotum;
-  font-size: 20px;
-  font-weight: bold;
-  letter-spacing: -0.5px;
-  line-height: 30px;
-  z-index: 2;
-`;
-
-const LeftArrowButton = styled.div`
-  width: 25px;
-  height: 25px;
-  margin-left: 10px;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-`;
-const LeftArrowIcon = styled.img`
-  width: 80%;
-  height: 80%;
-  border-radius: 50%;
-`;
-
 const TopHalf = styled.div`
   flex: 1;
   background-image: url(${sample});
@@ -151,6 +124,94 @@ const AddButton = styled.button`
   padding-left: 5%;
   padding-right: 5%;
 `;
+
+const LandingContainer = styled.div`
+  background-color: white;
+  z-index: 1;
+  position: relative;
+  padding-bottom: 60px;
+  height: 100vh;
+`;
+const HeaderContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background-color: white;
+  box-shadow: 0px 2px 5px 0px #00000040;
+  color: black;
+  height: 70px;
+  text-align: center;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  font-family: KoPubWorldDotum;
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: -0.5px;
+  line-height: 30px;
+  z-index: 2;
+`;
+const LeftArrowButton = styled.div`
+  width: 25px;
+  height: 25px;
+  margin-left: 10px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+`;
+const LeftArrowIcon = styled.img`
+  width: 80%;
+  height: 80%;
+  border-radius: 50%;
+`;
+const SearchHintContainer = styled.div`
+  display: flex;
+  flex: 1;
+  background-color: white;
+  justify-content: space-between;
+  padding: 10px;
+  margin-top: 50px;
+  border-radius: 20px;
+  box-shadow: 0px 0px 5px 0px #00000040;
+  margin-left: 15px;
+  margin-right: 15px;
+`;
+
+const SearchHintText = styled.input`
+  font-family: KoPubWorldDotum;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 26px;
+  letter-spacing: -0.5px;
+  text-align: left;
+  color: #999999;
+  border: none;
+  outline: none;
+`;
+export const StageContainer = styled.div``;
+
+const SearchImage = styled.img`
+  width: 25px;
+  height: 32.36px;
+`;
+export const AlertImage = styled.img`
+  width: 74.91px;
+  height: 67px;
+  margin-bottom: 20px;
+  margin-left: 40%;
+  margin-top: 40%;
+`;
+export const AlertMessage = styled.div`
+  font-family: "KopubWorldDotum";
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 26px;
+  letter-spacing: -0.5px;
+  text-align: center;
+  color: #999999;
+  margin: 10px 25px 20px 25px;
+`;
+
 const PlaceComponent = ({ placeName, placeAddress, onRemove }) => {
   return (
     <PlaceContainer>
@@ -167,12 +228,15 @@ const ViewTripPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const selectedLandmark = location?.state?.selectedLandmark || "";
+  const [showAddPlaceOverlay, setShowAddPlaceOverlay] = useState(false);
+  const [newPlaceName, setNewPlaceName] = useState("");
+  const [editingDayIndex, setEditingDayIndex] = useState(null); // Add this line
 
-  const generateDays = (startDate, endDate) => {
+  const generateDays = (startDateString, endDateString) => {
     const days = [];
-    let currentDate = new Date(startDate);
+    let currentDate = new Date(startDateString);
 
-    while (currentDate <= endDate) {
+    while (currentDate <= new Date(endDateString)) {
       days.push({
         day: days.length + 1,
         date: new Date(currentDate),
@@ -183,47 +247,87 @@ const ViewTripPage = () => {
 
     return days;
   };
-  const [days, setDays] = useState(
-    generateDays(trip1.startDate, trip1.endDate)
-  );
   const [places, setPlaces] = useState([]);
   const handleAddPlace = (dayIndex) => {
-    navigate("/search");
-    console.log("Selected Landmark:", selectedLandmark);
+    setShowAddPlaceOverlay(true);
+    setEditingDayIndex(dayIndex);
+  };
+
+  const handleAddPlaceConfirm = (plname) => {
+    console.log(1);
 
     const newPlace = {
-      name: selectedLandmark,
+      name: plname,
       address: "대전광역시 서구 둔산대로 169",
     };
+
+    setDays((prevPlaces) => {
+      const updatedPlaces = [...prevPlaces];
+      updatedPlaces[editingDayIndex].places.push(newPlace);
+      return updatedPlaces;
+    });
+
+    setShowAddPlaceOverlay(false);
+    setNewPlaceName("");
+    setEditingDayIndex(null);
+  };
+  const handleRemovePlace = (editingDayIndex, placeIndex) => {
     setDays((prevDays) => {
       const updatedDays = [...prevDays];
-      updatedDays[dayIndex].places.push(newPlace);
+      updatedDays[editingDayIndex].places.splice(placeIndex, 1);
       return updatedDays;
     });
   };
-  const handleRemovePlace = (dayIndex, placeIndex) => {
-    setDays((prevDays) => {
-      const updatedDays = [...prevDays];
-      updatedDays[dayIndex].places.splice(placeIndex, 1);
-      return updatedDays;
-    });
+  const [searchText, setSearchText] = useState("");
+
+  const handleSearchInputChange = (e) => {
+    const inputText = e.target.value;
+    setSearchText(inputText);
+
+    const filteredResults = LandmarkSet.filter((landmark) =>
+      landmark.toLowerCase().includes(inputText.toLowerCase())
+    );
+    setFiltereLandmarks(filteredResults);
+  };
+
+  const handleLandmarkClick = (selectedLandmark) => {
+    setNewPlaceName(selectedLandmark);
+    console.log(selectedLandmark);
+    console.log(newPlaceName);
+    handleAddPlaceConfirm(selectedLandmark);
+  };
+
+  const [filteredLandmarks, setFiltereLandmarks] = useState(LandmarkSet);
+  const tripData = location?.state?.tripData || null;
+
+  useEffect(() => {
+    if (tripData) {
+      const startDateString = tripData.startDate;
+      const endDateString = tripData.endDate;
+
+      setDays(generateDays(startDateString, endDateString));
+    }
+  }, [tripData]);
+  const [days, setDays] = useState([]);
+  const handleleftClick = () => {
+    navigate(-1);
   };
   return (
     <ViewTripContainer>
       <HeaderContainer>
         <LeftArrowButton>
-          <LeftArrowIcon src={LeftArrow} />
+          <LeftArrowIcon src={LeftArrow} onClick={handleleftClick} />
         </LeftArrowButton>
-        내 여행
+        {showAddPlaceOverlay ? "목적지 설정" : "내 여행"}
         <div style={{ marginRight: "40px" }} />
       </HeaderContainer>
       <TopHalf></TopHalf>
       <BottomHalf>
         <Title>
-          <TitleBold>{trip1.tripname}</TitleBold>
+          <TitleBold>{tripData.title}</TitleBold>
           <BodyMedium12>
-            {trip1.startDate.toLocaleDateString()} ~
-            {trip1.endDate.toLocaleDateString()}
+            {format(new Date(tripData.startDate), "yyyy.MM.dd")} ~
+            {format(new Date(tripData.endDate), "yyyy.MM.dd")}
           </BodyMedium12>
         </Title>
         <BodyMedium12>여행의 묘미는 언제나!</BodyMedium12>
@@ -253,6 +357,35 @@ const ViewTripPage = () => {
           </div>
         ))}
       </BottomHalf>
+      {showAddPlaceOverlay && (
+        <LandingContainer>
+          <StageContainer>
+            <SearchHintContainer>
+              <SearchHintText
+                type="text"
+                value={searchText}
+                onChange={handleSearchInputChange}
+                placeholder="검색어를 입력해요."
+              />
+              <SearchImage src={search} alt="Search" />
+            </SearchHintContainer>
+            {filteredLandmarks.length === 0 && (
+              <div>
+                <AlertImage src={alert1} alt="Splash" />
+                <AlertMessage>
+                  앗, 찾으시는 여행지가 없어요! <br /> 검색어를 수정하거나 다시
+                  입력해 주세요.
+                </AlertMessage>
+              </div>
+            )}
+            {filteredLandmarks.map((landmark, index) => (
+              <div key={index} onClick={() => handleLandmarkClick(landmark)}>
+                {landmark}
+              </div>
+            ))}
+          </StageContainer>
+        </LandingContainer>
+      )}
     </ViewTripContainer>
   );
 };

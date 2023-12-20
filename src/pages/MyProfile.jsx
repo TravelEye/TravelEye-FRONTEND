@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import sample from "../assets/images/sample.png";
 import Fixmypage from "../assets/images/Fixmypage.png";
@@ -212,12 +212,14 @@ const triphistory = [
 
 const MyProfilePage = () => {
   const navigate = useNavigate();
-
+  const location = useLocation();
+  const information = location?.state?.information || null;
+  console.log(information);
   const handleArrowButtonClick = () => {
     navigate(-1);
   };
   const handleFixButtonClick = () => {
-    navigate("/fixprofile");
+    navigate("/fixprofile", { state: { information: information } });
   };
   const initialTemperature = 36.5;
   const initialusername = "홍길동";
@@ -232,16 +234,16 @@ const MyProfilePage = () => {
       </TopHalf>
       <BottomHalf>
         <RoundRectangle>
-          <Usernametext>{initialusername}</Usernametext>
-          <IntroductionText>{initialintroduction}</IntroductionText>
-          <TempText>{initialusername} 님의 여행 온도</TempText>
+          <Usernametext>{information.nickname}</Usernametext>
+          <IntroductionText>{information.introduction}</IntroductionText>
+          <TempText>{information.nickname} 님의 여행 온도</TempText>
           <TemperatureBar temperature={initialTemperature} />
           <TemperatureBar2 src={temperature_bar} />
           <TemperatureNotifier temperature={initialTemperature}>
             <TriangleContainer />
             <Temperaturevalue>{initialTemperature}℃</Temperaturevalue>
           </TemperatureNotifier>
-          <TempText>{initialusername} 님의 여행 히스토리</TempText>
+          <TempText>{information.nickname} 님의 여행 히스토리</TempText>
           {triphistory.map((trip, index) => (
             <HistoryContainer key={index}>
               <ImageContainer>

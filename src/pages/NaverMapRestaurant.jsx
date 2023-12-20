@@ -12,14 +12,14 @@ const TripControlButtonContainer = styled.div`
   left: 10%;
   display: flex;
   gap: 10px;
-  width: 100%;
+  flex-direction: column;
 `;
 const TripControlButton = styled.button`
-  background-color: #50e093;
+  background-color: ${(props) => (props.active ? "#50e093" : "#999999")};
+  height: 20px;
+  border-radius: 20px;
   z-index: 2;
   border: none;
-
-  box-shadow: 0px 2px 5px 0px #00000040;
 `;
 
 const BottomSheet = styled.div`
@@ -86,6 +86,9 @@ const SimilarityContainer = styled.div`
   padding-right: 20px;
   margin-left: 5%;
 `;
+const Zzimimg = styled.img`
+  height: 20px;
+`;
 
 const NavermyMapRestaurant = () => {
   const [partnerMarkers, setPartnerMarkers] = useState([]);
@@ -95,10 +98,6 @@ const NavermyMapRestaurant = () => {
   const [bottomSheetHeight, setBottomSheetHeight] = useState("10%"); // 추가된 부분
   const [isZzimOn, setZzimon] = useState(false);
 
-  const handleZzimClick = () => {
-    setZzimon(!isZzimOn);
-    console.log(isZzimOn);
-  };
   const toggleBottomSheet = () => {
     setBottomSheetOpen(!isBottomSheetOpen);
 
@@ -222,7 +221,7 @@ const NavermyMapRestaurant = () => {
       );
 
       const responseData = response.data;
-
+      console.log(responseData);
       if (responseData && responseData.places) {
         const filteredRestaurants = responseData.places
           .filter((restaurant) => restaurant.rating >= 4)
@@ -262,7 +261,6 @@ const NavermyMapRestaurant = () => {
           }
         );
 
-        // 맵을 새 경계에 맞춥니다.
         map.fitBounds(newBounds);
       } else {
         console.error("API 응답 오류: 유효한 데이터가 없습니다.");
@@ -279,6 +277,106 @@ const NavermyMapRestaurant = () => {
     setActivePlan(index);
   };
 
+  const [favorites, setFavorites] = useState([]);
+  const [activeFavorites, setActiveFavorites] = useState([]);
+  const fetchFavorites = async () => {
+    try {
+      const response = await axios.get("http://127.0.0.1:80/food/favorites", {
+        headers: {
+          Authorization:
+            "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMUBnbWFpbC5jb20iLCJhdXRoIjoiVVNFUiIsImV4cCI6MTcwMzE3MTgzOH0.SBZpwxzPrlzb51hyHEH7ADe-pJcYWjpS_isziClGEn_XoT7AzHsQIaAGTLaGuRkgS-kJzVAKnd9kpUvktd4-3Q",
+        },
+      });
+
+      setFavorites(response.data.data);
+      console.log(favorites);
+      console.log(response.data.data);
+    } catch (error) {
+      console.error("Error fetching favorites:", error);
+    }
+  };
+  useEffect(() => {
+    fetchFavorites();
+  }, []);
+
+  useEffect(() => {
+    const activeFavorites = favorites.map((favorite) => favorite.restaurantId);
+    setActiveFavorites(activeFavorites);
+    console.log(activeFavorites);
+  }, [favorites]);
+
+  const handleZzimClick = async (restaurantId, restaurantName) => {
+    try {
+      const isFavorite = activeFavorites.includes(restaurantId);
+      const updatedFavorites = isFavorite
+        ? activeFavorites.filter((id) => id !== restaurantId)
+        : [...activeFavorites, restaurantId];
+
+      setActiveFavorites(updatedFavorites);
+
+      if (isFavorite) {
+        await handleDeleteZzim(restaurantId);
+      } else {
+        await handleAddZzim(restaurantId, restaurantName);
+      }
+
+      console.log("Favorite updated successfully!");
+    } catch (error) {
+      console.error("Error updating favorite:", error);
+    }
+  };
+
+  const handleAddZzim = async (restaurantId, restaurantName) => {
+    try {
+      await axios.post(
+        "http://127.0.0.1:80/food/favorites",
+        {
+          restaurantId: restaurantId,
+          restaurantName: restaurantName,
+        },
+        {
+          headers: {
+            Authorization:
+              "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMUBnbWFpbC5jb20iLCJhdXRoIjoiVVNFUiIsImV4cCI6MTcwMzE3MTgzOH0.SBZpwxzPrlzb51hyHEH7ADe-pJcYWjpS_isziClGEn_XoT7AzHsQIaAGTLaGuRkgS-kJzVAKnd9kpUvktd4-3Q",
+            "Content-type": "application/json",
+          },
+        }
+      );
+
+      console.log("Favorite added successfully!");
+      fetchFavorites();
+    } catch (error) {
+      console.error("Error adding favorite:", error);
+    }
+  };
+  const handleDeleteZzim = async (restaurantId) => {
+    try {
+      const favoriteToDelete = favorites.find(
+        (favorite) => favorite.restaurantId === restaurantId
+      );
+
+      if (!favoriteToDelete) {
+        console.error(`Favorite not found for restaurantId ${restaurantId}`);
+        return;
+      }
+
+      await axios.delete(
+        `http://127.0.0.1:80/food/favorites/${favoriteToDelete.id}`,
+        {
+          headers: {
+            Authorization:
+              "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMUBnbWFpbC5jb20iLCJhdXRoIjoiVVNFUiIsImV4cCI6MTcwMzE3MTgzOH0.SBZpwxzPrlzb51hyHEH7ADe-pJcYWjpS_isziClGEn_XoT7AzHsQIaAGTLaGuRkgS-kJzVAKnd9kpUvktd4-3Q",
+          },
+        }
+      );
+
+      console.log("Favorite deleted successfully!");
+      fetchFavorites();
+    } catch (error) {
+      console.error("Error deleting favorite:", error);
+    }
+  };
+
   return (
     <div>
       <TripControlButtonContainer>
@@ -286,8 +384,9 @@ const NavermyMapRestaurant = () => {
           <TripControlButton
             key={index}
             onClick={() => handlePlanButtonClick(index)}
+            active={index === activePlan}
           >
-            <BodyBold15>Trip {index + 1}</BodyBold15>
+            <BodyBold12>Trip {index + 1}</BodyBold12>
           </TripControlButton>
         ))}
       </TripControlButtonContainer>
@@ -300,9 +399,18 @@ const NavermyMapRestaurant = () => {
               <BottomSheetText>
                 <BottomSheetTextLine1>
                   <BodyBold15>{restaurant.displayName.text}</BodyBold15>
-                  <img
-                    src={isZzimOn === true ? zzim_on : zzim_off}
-                    onClick={handleZzimClick}
+                  <Zzimimg
+                    src={
+                      activeFavorites.includes(restaurant.id)
+                        ? zzim_on
+                        : zzim_off
+                    }
+                    onClick={() =>
+                      handleZzimClick(
+                        restaurant.id,
+                        restaurant.displayName.text
+                      )
+                    }
                     style={
                       isZzimOn === true
                         ? { width: "20px", height: "20px" }
