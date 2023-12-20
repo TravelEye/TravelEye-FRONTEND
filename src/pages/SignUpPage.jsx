@@ -3,14 +3,13 @@ import styled from "styled-components";
 import { signupAPI, checkEmailAPI } from "../apis/signup";
 import { useNavigate } from "react-router-dom";
 import { BsCheck } from "react-icons/bs";
+import { TitleBold, SubTitleMedium, BodyBold12 } from "./fonts.js";
 import {
   RightArrowButton,
   RightArrowIcon,
   CircleContainer,
   Circle,
   SplashImage,
-  AlertImage,
-  AlertMessage,
   QuestionTitle,
   InputContainer,
   StageContainer,
@@ -18,6 +17,53 @@ import {
 } from "./MakeTripPage";
 import splash from "../assets/images/splash.png";
 import RightArrow from "../assets/images/RightArrow.png";
+
+const ReplyRow = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
+const Replytext = styled.div`
+  display: flex;
+  justify-content: center;
+  padding: 5px;
+`;
+const Replycontent = styled.div`
+  height: 60px;
+  width: 60px;
+  margin: 10px;
+  border-radius: 20px;
+  background-color: ${(props) => (props.isSelected ? "#50e293" : "#e2e2e2")};
+  cursor: pointer;
+`;
+const ProgressContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-left: 7%;
+  margin-right: 7%;
+  height: 200px;
+  align-items: center;
+`;
+const Progress = styled.div`
+  cursor: pointer;
+  height: 10px;
+  width: 27px;
+  border-radius: 5px;
+  background-color: ${(props) => (props.isGreen ? "#50e293" : "#E2E2E2")};
+`;
+const SubmitButton = styled.button`
+  height: 50px;
+  width: 86%;
+  margin-left: 7%;
+  margin-right: 7%;
+  margin-top: 5%;
+  border-radius: 20px;
+  background-color: #e2e2e2;
+  border: none;
+  align-items: center;
+`;
+
 const CheckIconCircle = styled.div`
   display: flex;
   align-items: center;
@@ -85,12 +131,16 @@ const SexOption = styled.select`
 `;
 
 function SignUpPage() {
-  const [registerSuccess, setRegisterSuccess] = useState(false);
   const [checkPW, setCheckPW] = useState(true);
   const [isEmailChecked, setIsEmailChecked] = useState(false);
   const [isCheckingEmail, setIsCheckingEmail] = useState(false);
   const [isUsableEmail, SetIsUsableEmail] = useState();
   const [error, setErrorMsg] = useState("");
+
+  /*설문조사용*/
+
+  const [selectedReply, setSelectedReply] = useState(null);
+
   const navigate = useNavigate();
 
   const [data, setData] = useState({
@@ -108,7 +158,7 @@ function SignUpPage() {
     preferManyPhotos: 1,
     preferNatureThanCity: 1,
     preferNewCity: 1,
-    preferTightSchedule: 1, // 설문조사 항목
+    preferTightSchedule: 1,
   });
   const onNicknameHandler = (e) => {
     setData((prevData) => ({ ...prevData, nickname: e.target.value }));
@@ -118,6 +168,7 @@ function SignUpPage() {
     setIsEmailChecked(false);
     setIsCheckingEmail(true);
   };
+
   useEffect(() => {
     let timer;
 
@@ -168,10 +219,11 @@ function SignUpPage() {
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
+    console.log(data);
     try {
       const response = await signupAPI(data);
       if (response) {
-        navigate("/survey");
+        navigate("/landing");
       }
     } catch (error) {
       console.log("회원가입 오류발생");
@@ -233,6 +285,7 @@ function SignUpPage() {
   const [step, setStep] = useState(1);
   let currentStepComponent;
   const moveToNextStepButtonClick = () => {
+    setSelectedReply(1);
     setStep((prevStep) => prevStep + 1);
   };
 
@@ -338,7 +391,398 @@ function SignUpPage() {
         </StageContainer>
       );
       break;
+    case 4:
+      currentStepComponent = (
+        <div>
+          <TitleBold style={{ textAlign: "center", marginTop: "200px" }}>
+            Q1.
+          </TitleBold>
+          <SubTitleMedium
+            style={{
+              textAlign: "center",
+              height: "100px",
+              padding: "10px",
+            }}
+          >
+            휴가를 보낼 때, <br /> 자연 휴양지와 도시 중 <br /> 어디를 더
+            선호하시나요?
+          </SubTitleMedium>
+          <ReplyRow>
+            {Array(5)
+              .fill()
+              .map((_, index) => (
+                <div>
+                  <Replycontent
+                    key={index + 1}
+                    isSelected={selectedReply === index + 1}
+                    onClick={() => {
+                      setData((prevData) => ({
+                        ...prevData,
+                        preferNatureThanCity: index + 1,
+                      }));
+                      setSelectedReply(index + 1);
+                    }}
+                  />
+                  {index == 1 && (
+                    <Replytext>
+                      <BodyBold12>자연 휴양지</BodyBold12>
+                    </Replytext>
+                  )}
+                  {index == 5 && (
+                    <Replytext>
+                      <BodyBold12>도시</BodyBold12>
+                    </Replytext>
+                  )}
+                </div>
+              ))}
+          </ReplyRow>
 
+          <ProgressContainer>
+            <Progress isGreen />
+            <Progress />
+            <Progress />
+            <Progress />
+            <Progress />
+            <Progress />
+            <Progress />
+          </ProgressContainer>
+        </div>
+      );
+      break;
+
+    case 5:
+      currentStepComponent = (
+        <div>
+          <TitleBold style={{ textAlign: "center", marginTop: "200px" }}>
+            Q2.
+          </TitleBold>
+          <SubTitleMedium
+            style={{
+              textAlign: "center",
+              height: "100px",
+              padding: "10px",
+            }}
+          >
+            한적하고 숨은 여행지와 <br /> 유명 핫 플레이스 중<br /> 꼭 가야 하는
+            곳은 어디인가요?
+          </SubTitleMedium>
+          <ReplyRow>
+            {Array(5)
+              .fill()
+              .map((_, index) => (
+                <div>
+                  <Replycontent
+                    key={index + 1}
+                    isSelected={selectedReply === index + 1}
+                    onClick={() => {
+                      setData((prevData) => ({
+                        ...prevData,
+                        preferNewCity: index + 1,
+                      }));
+                      setSelectedReply(index + 1);
+                    }}
+                  />
+                  {index == 1 && (
+                    <Replytext>
+                      <BodyBold12>한적한 여행지</BodyBold12>
+                    </Replytext>
+                  )}
+                  {index == 5 && (
+                    <Replytext>
+                      <BodyBold12>핫 플레이스</BodyBold12>
+                    </Replytext>
+                  )}
+                </div>
+              ))}
+          </ReplyRow>
+
+          <ProgressContainer>
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress />
+            <Progress />
+            <Progress />
+            <Progress />
+            <Progress />
+          </ProgressContainer>
+        </div>
+      );
+      break;
+
+    case 6:
+      currentStepComponent = (
+        <div>
+          <TitleBold style={{ textAlign: "center", marginTop: "200px" }}>
+            Q3.
+          </TitleBold>
+          <SubTitleMedium
+            style={{ textAlign: "center", height: "100px", padding: "10px" }}
+          >
+            프리하고 계획 없는 여행과 <br /> 알찬 계획과 일정이 있는 여행 중{" "}
+            <br /> 어느 스타일에 더 가까우신가요?
+          </SubTitleMedium>
+          <ReplyRow>
+            {Array(5)
+              .fill()
+              .map((_, index) => (
+                <div>
+                  <Replycontent
+                    key={index + 1}
+                    isSelected={selectedReply === index + 1}
+                    onClick={() => {
+                      setData((prevData) => ({
+                        ...prevData,
+                        preferDetailPlan: index + 1,
+                      }));
+                      setSelectedReply(index + 1);
+                    }}
+                  />
+                  {index == 1 && (
+                    <Replytext>
+                      <BodyBold12>프리스타일</BodyBold12>
+                    </Replytext>
+                  )}
+                  {index == 5 && (
+                    <Replytext>
+                      <BodyBold12>알찬 계획</BodyBold12>
+                    </Replytext>
+                  )}
+                </div>
+              ))}
+          </ReplyRow>
+
+          <ProgressContainer>
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress />
+            <Progress />
+            <Progress />
+            <Progress />
+          </ProgressContainer>
+        </div>
+      );
+      break;
+
+    case 7:
+      currentStepComponent = (
+        <div>
+          <TitleBold style={{ textAlign: "center", marginTop: "200px" }}>
+            Q4.
+          </TitleBold>
+          <SubTitleMedium
+            style={{ textAlign: "center", height: "100px", padding: "10px" }}
+          >
+            남는 건 사진 뿐!
+            <br /> 사진보다 지금 현재가 중요하다! <br /> 어느 쪽에 동의하시나요?
+          </SubTitleMedium>
+          <ReplyRow>
+            {Array(5)
+              .fill()
+              .map((_, index) => (
+                <div>
+                  <Replycontent
+                    key={index + 1}
+                    isSelected={selectedReply === index + 1}
+                    onClick={() => {
+                      setData((prevData) => ({
+                        ...prevData,
+                        preferManyPhotos: index + 1,
+                      }));
+                      setSelectedReply(index + 1);
+                    }}
+                  />
+                  {index == 1 && (
+                    <Replytext>
+                      <BodyBold12>중요하지 않음</BodyBold12>
+                    </Replytext>
+                  )}
+                  {index == 5 && (
+                    <Replytext>
+                      <BodyBold12>사진 촬영 필수</BodyBold12>
+                    </Replytext>
+                  )}
+                </div>
+              ))}
+          </ReplyRow>
+
+          <ProgressContainer>
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress />
+            <Progress />
+            <Progress />
+          </ProgressContainer>
+        </div>
+      );
+      break;
+
+    case 8:
+      currentStepComponent = (
+        <div>
+          <TitleBold style={{ textAlign: "center", marginTop: "200px" }}>
+            Q5.
+          </TitleBold>
+          <SubTitleMedium
+            style={{ textAlign: "center", height: "100px", padding: "10px" }}
+          >
+            맛집 식도락 여행과 <br /> 맛집 상관없이 관광지 방문 중 <br /> 어느
+            것이 더 끌리시나요?
+          </SubTitleMedium>
+          <ReplyRow>
+            {Array(5)
+              .fill()
+              .map((_, index) => (
+                <div>
+                  <Replycontent
+                    key={index + 1}
+                    isSelected={selectedReply === index + 1}
+                    onClick={() => {
+                      setData((prevData) => ({
+                        ...prevData,
+                        preferGoodFood: index + 1,
+                      }));
+                      setSelectedReply(index + 1);
+                    }}
+                  />
+                  {index == 1 && (
+                    <Replytext>
+                      <BodyBold12>관광지 방문</BodyBold12>
+                    </Replytext>
+                  )}
+                  {index == 5 && (
+                    <Replytext>
+                      <BodyBold12>식도락 여행</BodyBold12>
+                    </Replytext>
+                  )}
+                </div>
+              ))}
+          </ReplyRow>
+
+          <ProgressContainer>
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress />
+            <Progress />
+          </ProgressContainer>
+        </div>
+      );
+      break;
+
+    case 9:
+      currentStepComponent = (
+        <div>
+          <TitleBold style={{ textAlign: "center", marginTop: "200px" }}>
+            Q6.
+          </TitleBold>
+          <SubTitleMedium
+            style={{ textAlign: "center", height: "100px", padding: "10px" }}
+          >
+            당일치기 여행과 <br /> 여행 기간이 이틀 이상인 여행 중 <br /> 더
+            가고 싶은 여행은 어느 쪽인가요?
+          </SubTitleMedium>
+          <ReplyRow>
+            {Array(5)
+              .fill()
+              .map((_, index) => (
+                <div>
+                  <Replycontent
+                    key={index + 1}
+                    isSelected={selectedReply === index + 1}
+                    onClick={() => {
+                      setData((prevData) => ({
+                        ...prevData,
+                        preferDayTrip: index + 1,
+                      }));
+                      setSelectedReply(index + 1);
+                    }}
+                  />
+                  {index == 0 && (
+                    <Replytext>
+                      <BodyBold12>당일치기</BodyBold12>
+                    </Replytext>
+                  )}
+                  {index == 4 && (
+                    <Replytext>
+                      <BodyBold12>숙소는 필수</BodyBold12>
+                    </Replytext>
+                  )}
+                </div>
+              ))}
+          </ReplyRow>
+
+          <ProgressContainer>
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress />
+          </ProgressContainer>
+        </div>
+      );
+      break;
+
+    case 10:
+      currentStepComponent = (
+        <div>
+          <TitleBold style={{ textAlign: "center", marginTop: "200px" }}>
+            Q7.
+          </TitleBold>
+          <SubTitleMedium
+            style={{ textAlign: "center", height: "100px", padding: "10px" }}
+          >
+            불편해도 가격이 저렴한 여행과 <br /> 가심비를 추구하는 편한 여행 중
+            <br /> 어느 것을 더 선호하시나요?
+          </SubTitleMedium>
+          <ReplyRow>
+            {Array(5)
+              .fill()
+              .map((_, index) => (
+                <div>
+                  <Replycontent
+                    key={index + 1}
+                    isSelected={selectedReply === index + 1}
+                    onClick={() => {
+                      setData((prevData) => ({
+                        ...prevData,
+                        preferCheapHotelThanComfort: index + 1,
+                      }));
+                      setSelectedReply(index + 1);
+                    }}
+                  />
+                  {index == 0 && (
+                    <Replytext>
+                      <BodyBold12>가격 저렴</BodyBold12>
+                    </Replytext>
+                  )}
+                  {index == 4 && (
+                    <Replytext>
+                      <BodyBold12>편한 여행</BodyBold12>
+                    </Replytext>
+                  )}
+                </div>
+              ))}
+          </ReplyRow>
+
+          <ProgressContainer>
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress isGreen />
+          </ProgressContainer>
+        </div>
+      );
+      break;
     default:
       currentStepComponent = null;
   }
@@ -347,7 +791,7 @@ function SignUpPage() {
     <div>
       <form style={{ display: "flex", flexDirection: "column" }}>
         {currentStepComponent}
-        {step == 3 ? (
+        {step == 10 ? (
           <RightArrowButton>
             <RightArrowIcon src={RightArrow} onClick={onSubmitHandler} />
           </RightArrowButton>
