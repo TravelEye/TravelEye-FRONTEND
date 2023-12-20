@@ -1,0 +1,23 @@
+/* color.css */
+
+:root {
+  --Travel_Green: #6fe28a;
+  --Black_Gray: #161616;
+  --Gray_80: #494949;
+  --Gray_50: #999999;
+  --Gray_30: #e2e2e2;
+  --Travel_Alert: #fa4747;
+}
+
+/*  사용 예시
+import './color.css'; 
+
+const MapPage = () => {
+  return (
+    <div style={{ backgroundColor: 'var(--travel-green)' }}>
+      </div>
+      );
+    };
+    
+    export default MapPage;
+    */

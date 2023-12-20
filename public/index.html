@@ -11,8 +11,18 @@
     />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <script
+      defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDwnlbxENxKY3ubbVjDBtH_x4GOZy_2fSU&callback=initMap"
+    ></script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div id="map" style="height: 600px"></div>
+    </div>
   </body>
 </html>
+<script
+  type="text/javascript"
+  src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=sbx2xekwgu"
+></script>

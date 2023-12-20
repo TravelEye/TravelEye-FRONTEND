@@ -5,7 +5,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
 import { createStore } from "redux";
-import rootReducer from "./reducers"; // 여기에 본인의 리듀서를 가져와야 합니다.
+import rootReducer from "./reducers";
 
 const store = createStore(rootReducer);
 

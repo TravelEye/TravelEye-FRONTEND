@@ -4,7 +4,13 @@ import { Paper, Typography, useMediaQuery } from "@material-ui/core";
 import LocationOnOutlineIcon from "@material-ui/icons/LocationOnOutlined";
 import { Rating } from "@material-ui/lab";
 import axios from "axios";
-const my_api_key = "";
+
+import RestaurantBottomSheet from "./RestaurantBottomSheet";
+import addr_person from "../assets/images/addr_person.png";
+import addr_spoon from "../assets/images/addr_spoon.png";
+import { PersonalVideo } from "@material-ui/icons";
+
+const my_api_key = "AIzaSyDwnlbxENxKY3ubbVjDBtH_x4GOZy_2fSU";
 
 const MapRestaurant = () => {
   const plans = [
@@ -29,6 +35,13 @@ const MapRestaurant = () => {
   const [mapZoom, setMapZoom] = useState(initialMapZoom);
   const [restaurants, setRestaurants] = useState([]);
 
+  const [bottomSheetHeight, setBottomSheetHeight] = useState(0);
+
+  const handleBottomSheetHeaderClick = () => {
+    console.log("Before click - bottomSheetHeight:", bottomSheetHeight);
+    setBottomSheetHeight((prevHeight) => (prevHeight === 0 ? 300 : 0));
+    console.log("After click - bottomSheetHeight:", bottomSheetHeight);
+  };
   const handleMarkerClick = (marker) => {
     setSelectedMarker(marker);
     setMapCenter({ lat: marker.lat, lng: marker.lng });
@@ -112,7 +125,7 @@ const MapRestaurant = () => {
   const googleMapKey = `${mapCenter.lat}_${mapCenter.lng}_${mapZoom}`;
 
   return (
-    <div style={{ height: "400px", width: "100%" }}>
+    <div style={{ height: "100%", width: "100%", position: "relative" }}>
       <GoogleMapReact
         bootstrapURLKeys={{
           key: `${my_api_key}`,
@@ -159,6 +172,19 @@ const MapRestaurant = () => {
           />
         )}
       </GoogleMapReact>
+      <div
+        style={{
+          position: "absolute",
+          bottom: 70,
+          left: 70,
+          width: "100%",
+          height: bottomSheetHeight,
+          transition: "height 0.3s ease",
+          overflow: "hidden",
+        }}
+      >
+        <RestaurantBottomSheet />
+      </div>
     </div>
   );
 };
@@ -195,10 +221,10 @@ const MarkerF1 = ({ text, onClick }) => (
     onClick={onClick}
   >
     <img
-      src="/Restaurant.png"
+      src={addr_spoon}
       style={{
-        width: 25,
-        height: 25,
+        width: 50,
+        height: 66.7,
       }}
     />
     {text}

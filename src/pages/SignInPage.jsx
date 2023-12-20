@@ -1,11 +1,9 @@
 import React, { useState } from "react";
+import styled from "styled-components";
 import { connect } from "react-redux";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../_actions/user_action";
 import { useNavigate } from "react-router-dom";
-<<<<<<< Updated upstream
-
-=======
 import splash from "../assets/images/splash.png";
 import { loginAPI } from "../apis/index.js";
 import {
@@ -56,6 +54,7 @@ const LoginButton = styled.button`
   margin-right: 10%;
   margin-top: 10%;
 `;
+
 export const ErrorMessage = styled.p`
   color: #ff6b6b;
   margin-bottom: 10px;
@@ -63,7 +62,7 @@ export const ErrorMessage = styled.p`
   text-align: center;
   width: 100%;
 `;
->>>>>>> Stashed changes
+
 function SignInPage(props) {
   const [Email, setEmail] = useState("");
   const [Password, setPassword] = useState("");
@@ -100,17 +99,19 @@ function SignInPage(props) {
 
   return (
     <div>
+      <SplashImage src={splash} alt="Splash" />
+      <SubTitleMedium> 즐거운 여행의 시작,</SubTitleMedium>
+      <TitleBold>트래블아이</TitleBold>
       <form
         style={{ display: "flex", flexDirection: "column" }}
         onSubmit={onSubmitHandler}
       >
-<<<<<<< Updated upstream
         <label>Email Address</label>
         <input type="email" value={Email} onChange={onEmailHandler} />
         <label>Password</label>
         <input type="password" value={Password} onChange={onPasswordHandler} />
         <button type="submit">Login</button>
-=======
+
         <Emailinput
           type="email"
           value={Email}
@@ -129,7 +130,10 @@ function SignInPage(props) {
         <LoginButton type="submit">
           <BodyBold15>기존 정보로 로그인하기</BodyBold15>
         </LoginButton>
->>>>>>> Stashed changes
+
+        <LoginButton type="submit">
+          <BodyBold15>기존 정보로 로그인하기</BodyBold15>
+        </LoginButton>
       </form>
       {loginSuccess && <p>Login Successful</p>}
       {!loginSuccess && <p>Login Failed</p>}
