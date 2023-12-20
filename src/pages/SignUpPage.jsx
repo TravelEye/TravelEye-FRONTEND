@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../_actions/user_action";
+import { signupAPI } from "../apis";
 import { useNavigate } from "react-router-dom";
 import { validUser } from "../_actions/user_action"; // Import the validUser array
 import {
@@ -63,64 +64,118 @@ const SexOption = styled.select`
   padding-right: 3%;
 `;
 
-function SignUpPage(props) {
-  const [Email, setEmail] = useState("");
-  const [Password, setPassword] = useState("");
+function SignUpPage() {
   const [registerSuccess, setRegisterSuccess] = useState(false);
-  const [checkPW, setCheckPW] = useState(false);
-  const [username, setUsername] = useState("");
-  const [userage, setUserage] = useState("");
-  const [usersex, setUsersex] = useState("");
+  const [checkPW, setCheckPW] = useState(true);
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const onnameHandler = (e) => {
-    setUsername(e.target.value);
-  };
-  const onageHandler = (e) => {
-    setUserage(e.target.value);
-  };
-  const onsexHandler = (e) => {
-    setUsersex(e.target.value);
-  };
 
+  const [data, setData] = useState({
+    email: "",
+    password: "",
+    age: 10,
+    gender: "MALE",
+    nickname: "",
+    phoneNumber: "",
+    shareLocation: false,
+    preferCheapHotelThanComfort: 1,
+    preferDayTrip: 1,
+    preferDetailPlan: 1,
+    preferGoodFood: 1,
+    preferManyPhotos: 1,
+    preferNatureThanCity: 1,
+    preferNewCity: 1,
+    preferTightSchedule: 1, // 설문조사 항목
+  });
+  const onNicknameHandler = (e) => {
+    setData((prevData) => ({ ...prevData, nickname: e.target.value }));
+    console.log(e.target.value);
+  };
   const onEmailHandler = (e) => {
-    setEmail(e.target.value);
+    setData((prevData) => ({ ...prevData, email: e.target.value }));
   };
   const onPasswordHandler = (e) => {
-    setPassword(e.target.value);
+    setData((prevData) => ({ ...prevData, password: e.target.value }));
   };
   const onPWcheckHandler = (event) => {
-    if (Password === event.currentTarget.value) {
-      setCheckPW(true);
+    const confirmPassword = event.currentTarget.value;
+    console.log(data.password);
+    console.log(confirmPassword);
+    if (data.password !== "" && confirmPassword !== "") {
+      if (data.password === confirmPassword) {
+        setCheckPW(true);
+      } else {
+        setCheckPW(false);
+      }
     } else {
       setCheckPW(false);
     }
   };
-  const onSubmitHandler = (event) => {
-    event.preventDefault();
-    if (!Email) {
-      return alert("이메일을 입력하세요");
-    } else if (!Password) {
-      return alert("비밀번호를 입력하세요");
-    } else if (!checkPW) {
-      return alert("동일한 비밀번호를 입력하세요");
-    } else {
-      let body = {
-        // let = 이 함수 내에서만 유효한 변수 선언문
-        email: Email,
-        password: Password,
-      };
-      console.log(body);
 
-      console.log(validUser);
-      validUser.push(body);
-      localStorage.setItem("validUser", JSON.stringify(validUser));
-
-      console.log(validUser);
-      navigate("/");
+  const onSubmitHandler = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await signupAPI(data);
+      if (response) {
+        navigate("/survey");
+      }
+    } catch (error) {
+      console.log("회원가입 오류발생");
     }
   };
+
+  const AgeDropdown = () => {
+    const [selectedAge, setSelectedAge] = useState(10);
+
+    const onAgeHandler = (e) => {
+      setSelectedAge(e.target.value);
+      setData((prevData) => ({ ...prevData, age: e.target.value }));
+    };
+
+    const ageOptions = [
+      { key: "19세 이하", value: 10 },
+      { key: "20세 ~ 29세", value: 20 },
+      { key: "30세 ~ 39세", value: 30 },
+      { key: "40세 ~ 49세", value: 40 },
+      { key: "50세 ~ 59세", value: 50 },
+      { key: "60세 ~ 69세", value: 60 },
+      { key: "70세 이상", value: 70 },
+    ];
+
+    return (
+      <AgeOption value={selectedAge} onChange={onAgeHandler}>
+        {ageOptions.map((ageOption) => (
+          <option key={ageOption.key} value={ageOption.value}>
+            {ageOption.key}
+          </option>
+        ))}
+      </AgeOption>
+    );
+  };
+  const SexDropdown = () => {
+    const [selectedSex, setSelectedSex] = useState("MALE"); // Set the initial value as needed
+
+    const onGenderHandler = (e) => {
+      setSelectedSex(e.target.value);
+      setData((prevData) => ({ ...prevData, gender: e.target.value }));
+    };
+
+    const sexOptions = [
+      { key: "남성", value: "MALE" },
+      { key: "여성", value: "FEMALE" },
+    ];
+
+    return (
+      <SexOption value={selectedSex} onChange={onGenderHandler}>
+        {sexOptions.map((sexOption) => (
+          <option key={sexOption.key} value={sexOption.value}>
+            {sexOption.key}
+          </option>
+        ))}
+      </SexOption>
+    );
+  };
+
   const [step, setStep] = useState(1);
   let currentStepComponent;
   const moveToNextStepButtonClick = () => {
@@ -145,9 +200,9 @@ function SignUpPage(props) {
           </QuestionTitle>
           <InputContainer
             type="text"
-            value={username}
-            onChange={onnameHandler}
-            placeholder="성함을 입력해주세요."
+            value={data.nickname}
+            onChange={onNicknameHandler}
+            placeholder="닉네임을 입력해주세요."
           />
           <DropSet>
             <AgeDropdown />
@@ -171,7 +226,7 @@ function SignUpPage(props) {
           </QuestionTitle>
           <InputContainer
             type="text"
-            value={Email}
+            value={data.email}
             onChange={onEmailHandler}
             placeholder="이메일을 입력해주세요."
           />
@@ -194,15 +249,29 @@ function SignUpPage(props) {
           </QuestionTitle>
           <InputContainer
             type="password"
-            value={Password}
+            value={data.password}
             onChange={onPasswordHandler}
             placeholder="비밀번호를 입력해주세요."
+            required={true}
           />
           <InputContainer
             type="password"
             onChange={onPWcheckHandler}
             placeholder="비밀번호를 입력해주세요."
+            required={true}
           />
+          {!checkPW && (
+            <div
+              style={{
+                color: "red",
+                marginTop: "5px",
+                textAlign: "center",
+                marginTop: "10px",
+              }}
+            >
+              비밀번호가 일치하지 않습니다.
+            </div>
+          )}
         </StageContainer>
       );
       break;
@@ -213,54 +282,23 @@ function SignUpPage(props) {
 
   return (
     <div>
-      {currentStepComponent}
-      <RightArrowButton>
-        <RightArrowIcon src={RightArrow} onClick={moveToNextStepButtonClick} />
-      </RightArrowButton>
-      <form
-        style={{ display: "flex", flexDirection: "column" }}
-        onSubmit={onSubmitHandler}
-      ></form>
+      <form style={{ display: "flex", flexDirection: "column" }}>
+        {currentStepComponent}
+        {step == 3 ? (
+          <RightArrowButton>
+            <RightArrowIcon src={RightArrow} onClick={onSubmitHandler} />
+          </RightArrowButton>
+        ) : (
+          <RightArrowButton>
+            <RightArrowIcon
+              src={RightArrow}
+              onClick={moveToNextStepButtonClick}
+            />
+          </RightArrowButton>
+        )}
+      </form>
     </div>
   );
 }
 
 export default SignUpPage;
-
-const AgeDropdown = ({ userage, setUserage }) => {
-  const ageOptions = [
-    "19세 이하",
-    "20세 ~ 29세",
-    "30세 ~ 39세",
-    "40세 ~ 49세",
-    "50세 ~ 59세",
-    "60세 ~ 69세",
-    "70세 이상",
-  ];
-
-  return (
-    <AgeOption value={userage} onChange={(e) => setUserage(e.target.value)}>
-      {ageOptions.map((ageOption) => (
-        <option key={ageOption} value={ageOption}>
-          {ageOption}
-        </option>
-      ))}
-    </AgeOption>
-  );
-};
-const SexDropdown = ({ selectedsex, onSelectSex }) => {
-  const sexOptions = ["남성", "여성"];
-
-  return (
-    <SexOption
-      value={selectedsex}
-      onChange={(e) => onSelectSex(e.target.value)}
-    >
-      {sexOptions.map((sexOptions) => (
-        <option key={sexOptions} value={sexOptions}>
-          {sexOptions}
-        </option>
-      ))}
-    </SexOption>
-  );
-};
