@@ -218,7 +218,7 @@ export const StageContainer = styled.div``;
 export const FirstContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  margin: 150px 25px 20px 25px;
+  margin: 200px 25px 20px 25px;
 `; //TRBL
 
 const SearchHintContainer = styled.div`

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import MainPage from "./pages/MainPage";
 import SurveyPage from "./pages/SurveyPage";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./App.css";
