@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { signupAPI, checkEmailAPI } from "../apis";
+import { signupAPI, checkEmailAPI } from "../apis/signup";
 import { useNavigate } from "react-router-dom";
 import { BsCheck } from "react-icons/bs";
 import {
