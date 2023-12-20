@@ -3,7 +3,7 @@ import GoogleMapReact from "google-map-react";
 import { Paper, Typography, useMediaQuery } from "@material-ui/core";
 import axios from "axios";
 
-const my_api_key = "";
+const my_api_key = "AIzaSyDwnlbxENxKY3ubbVjDBtH_x4GOZy_2fSU";
 
 const MapPartner = () => {
   const plans = [
@@ -14,7 +14,7 @@ const MapPartner = () => {
       lng: 126.475579,
       type: "plan",
     },
-    { name: "한라수목원", lat: 33.469857, lng: 126.493385, type: "plan" },
+    { name: "민속자연사박물관", lat: 33.506373, lng: 126.531646, type: "plan" },
   ];
 
   const partners = [
@@ -27,7 +27,7 @@ const MapPartner = () => {
     },
     {
       name: "Christoph",
-      planname: "한라수목원",
+      planname: "민속자연사박물관",
       character: 90,
       plan: 49,
       temperature: 54,

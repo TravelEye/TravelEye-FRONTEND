@@ -16,6 +16,8 @@ import MakeTripPage from "./pages/MakeTripPage";
 import FixMyProfilePage from "./pages/FixMyProfile";
 import UserProfilePage from "./pages/UserProfile";
 import NavermyMap from "./pages/NaverMap";
+import ViewTripPage from "./pages/ViewTrip";
+import SearchPage from "./pages/SearchPage";
 
 function App(props) {
   return (
@@ -27,6 +29,16 @@ function App(props) {
         <Route path="/survey" element={<SurveyPage />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route
+          path="/search"
+          element={
+            <>
+              <SearchPage />
+              <BottomNav />
+            </>
+          }
+        />
+
+        <Route
           path="/map"
           element={
             <>
@@ -35,6 +47,16 @@ function App(props) {
             </>
           }
         />
+        <Route
+          path="/viewtrip"
+          element={
+            <>
+              <ViewTripPage />
+              <BottomNav />
+            </>
+          }
+        />
+
         <Route
           path="/landing"
           element={

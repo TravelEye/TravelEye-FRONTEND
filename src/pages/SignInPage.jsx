@@ -1,10 +1,59 @@
 import React, { useState } from "react";
+import styled from "styled-components";
 import { connect } from "react-redux";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../_actions/user_action";
 import { useNavigate } from "react-router-dom";
+import splash from "../assets/images/splash.png";
+import {
+  TitleBold,
+  SubTitleMedium,
+  BodyMedium15,
+  BodyMedium12,
+  BodyBold15,
+  BodyBold12,
+} from "./fonts.js";
 
+const SplashImage = styled.img`
+  max-width: 100%;
+  max-height: 50vh;
+  margin-bottom: 20px;
+`;
+const Emailinput = styled.input`
+  height: 45px;
+  border-radius: 20px;
+  box-shadow: 0px 0px 5px 0px #00000040;
+  border: none;
+  margin-left: 10%;
+  margin-right: 10%;
+  ::placeholder {
+    color: #999999;
+    text-align: left;
+    margin-left: 30px;
+  }
+`;
+const Passwordinput = styled.input`
+  height: 45px;
+  border-radius: 20px;
+  box-shadow: 0px 0px 5px 0px #00000040;
+  border: none;
+  margin-left: 10%;
+  margin-right: 10%;
+  margin-top: 5%;
+  ::placeholder {
+    color: #999999;
+  }
+`;
+const LoginButton = styled.button`
+  height: 45px;
+  border-radius: 20px;
+  background-color: #50e293;
+  border: none;
+  margin-left: 10%;
+  margin-right: 10%;
+  margin-top: 10%;
+`;
 function SignInPage(props) {
   const [Email, setEmail] = useState("");
   const [Password, setPassword] = useState("");
@@ -44,15 +93,28 @@ function SignInPage(props) {
 
   return (
     <div>
+      <SplashImage src={splash} alt="Splash" />
+      <SubTitleMedium> 즐거운 여행의 시작,</SubTitleMedium>
+      <TitleBold>트래블아이</TitleBold>
       <form
         style={{ display: "flex", flexDirection: "column" }}
         onSubmit={onSubmitHandler}
       >
-        <label>Email Address</label>
-        <input type="email" value={Email} onChange={onEmailHandler} />
-        <label>Password</label>
-        <input type="password" value={Password} onChange={onPasswordHandler} />
-        <button type="submit">Login</button>
+        <Emailinput
+          type="email"
+          value={Email}
+          onChange={onEmailHandler}
+          placeholder="이메일을 입력해 주세요."
+        />
+        <Passwordinput
+          type="password"
+          value={Password}
+          onChange={onPasswordHandler}
+          placeholder="비밀번호를 입력해 주세요."
+        />
+        <LoginButton type="submit">
+          <BodyBold15>기존 정보로 로그인하기</BodyBold15>
+        </LoginButton>
       </form>
       {loginSuccess && <p>Login Successful</p>}
       {!loginSuccess && <p>Login Failed</p>}

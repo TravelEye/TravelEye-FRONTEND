@@ -18,14 +18,14 @@ const TripControlButtonContainer = styled.div`
   left: 10%;
   display: flex;
   gap: 10px;
-  width: 100%;
+  flex-direction: column;
 `;
 const TripControlButton = styled.button`
-  background-color: #50e093;
+  background-color: ${(props) => (props.active ? "#50e093" : "#999999")};
+  height: 20px;
+  border-radius: 20px;
   z-index: 2;
   border: none;
-
-  box-shadow: 0px 2px 5px 0px #00000040;
 `;
 const BottomSheet = styled.div`
   position: fixed;
@@ -127,10 +127,10 @@ const NavermyMap = () => {
         type: "landmark",
       },
       {
-        name: "한라수목원",
-        lat: 33.469857,
-        lng: 126.493385,
-        type: "landmark",
+        name: "민속자연사박물관",
+        lat: 33.506373,
+        lng: 126.531646,
+        type: "plan",
       },
     ],
     [
@@ -208,7 +208,7 @@ const NavermyMap = () => {
       [
         {
           name: "Christoph",
-          planname: "한라수목원",
+          planname: "민속자연사박물관",
           character: 90,
           plan: 49,
           temperature: 54,
@@ -217,7 +217,7 @@ const NavermyMap = () => {
         },
         {
           name: "Hellen",
-          planname: "한라수목원",
+          planname: "민속자연사박물관",
           character: 90,
           plan: 49,
           temperature: 54,
@@ -226,7 +226,7 @@ const NavermyMap = () => {
         },
         {
           name: "Nikola",
-          planname: "한라수목원",
+          planname: "민속자연사박물관",
           character: 90,
           plan: 49,
           temperature: 54,
@@ -235,7 +235,7 @@ const NavermyMap = () => {
         },
         {
           name: "Elizabeth",
-          planname: "한라수목원",
+          planname: "민속자연사박물관",
           character: 90,
           plan: 49,
           temperature: 54,
@@ -244,7 +244,7 @@ const NavermyMap = () => {
         },
         {
           name: "Kaiser",
-          planname: "한라수목원",
+          planname: "민속자연사박물관",
           character: 90,
           plan: 49,
           temperature: 54,
@@ -398,7 +398,7 @@ const NavermyMap = () => {
     };
 
     const script = document.createElement("script");
-    script.src = `https://maps.googleapis.com/maps/api/js?key=&callback=initMap`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDwnlbxENxKY3ubbVjDBtH_x4GOZy_2fSU&callback=initMap`;
     script.defer = true;
     document.head.appendChild(script);
 
@@ -418,8 +418,9 @@ const NavermyMap = () => {
           <TripControlButton
             key={index}
             onClick={() => handlePlanButtonClick(index)}
+            active={index === activePlan}
           >
-            <BodyBold15>Trip {index + 1}</BodyBold15>
+            <BodyBold12>Trip {index + 1}</BodyBold12>
           </TripControlButton>
         ))}
       </TripControlButtonContainer>

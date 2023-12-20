@@ -10,7 +10,7 @@ import addr_person from "../assets/images/addr_person.png";
 import addr_spoon from "../assets/images/addr_spoon.png";
 import { PersonalVideo } from "@material-ui/icons";
 
-const my_api_key = "";
+const my_api_key = "AIzaSyDwnlbxENxKY3ubbVjDBtH_x4GOZy_2fSU";
 
 const MapRestaurant = () => {
   const plans = [

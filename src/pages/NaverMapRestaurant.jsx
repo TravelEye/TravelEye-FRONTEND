@@ -178,7 +178,7 @@ const NavermyMapRestaurant = () => {
     };
 
     const script = document.createElement("script");
-    script.src = `https://maps.googleapis.com/maps/api/js?key=&callback=initMap`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDwnlbxENxKY3ubbVjDBtH_x4GOZy_2fSU&callback=initMap`;
     script.defer = true;
     document.head.appendChild(script);
 
@@ -211,7 +211,7 @@ const NavermyMapRestaurant = () => {
 
     try {
       const response = await axios.post(
-        `https://places.googleapis.com/v1/places:searchNearby?key=`,
+        `https://places.googleapis.com/v1/places:searchNearby?key=AIzaSyDwnlbxENxKY3ubbVjDBtH_x4GOZy_2fSU`,
         requestData,
         {
           headers: {

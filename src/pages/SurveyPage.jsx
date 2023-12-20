@@ -1,175 +1,416 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import {
+  TitleBold,
+  SubTitleMedium,
+  BodyMedium15,
+  BodyMedium12,
+  BodyBold15,
+  BodyBold12,
+} from "./fonts.js";
+import RightArrow from "../assets/images/RightArrow.png";
+import RightArrow_active from "../assets/images/RightArrow_active.png";
+
+const RightArrowButton = styled.div`
+  position: absolute;
+  bottom: 80px;
+  right: 40px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #50e293;
+  border-radius: 50%;
+`;
+const RightArrowIcon = styled.img`
+  width: 65%;
+  height: 65%;
+  border-radius: 50%;
+`;
 
 const SurveyContainer = styled.div`
-  padding: 20px 20px 20px 20px;
-  background-color: rgb(41, 194, 156);
+  background-color: white;
+  //display: flex;
+  //flex-direction: column;
+  //align-items: center;
 `;
 const QuestionContainer = styled.div`
-  margin: 20px 0;
-  padding: 20px;
-  background-color: #fff;
-  border: 2px solid #ddd;
-  border-radius: 10px;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  margin-top: 45%;
+  display: flex;
+  flex-direction: column;
 `;
-const SelectButton = styled.div`
-  padding-left: 2%;
-  padding-top: 2%;
-  padding-bottom: 2%;
-  height: 10%;
-  background-color: #e8e9e5;
-  color: #6a6b6a;
-  border: none;
+
+const ReplyRow = styled.div`
+  display: flex;
+  justify-content: spacebetween;
+`;
+
+const Replytext = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+const Replycontent = styled.div`
+  height: 60px;
+  width: 15%;
+  border-radius: 20px;
+  background-color: ${(props) => (props.isSelected ? "#50e293" : "#e2e2e2")};
+  cursor: pointer;
+`;
+const ProgressContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-left: 7%;
+  margin-right: 7%;
+`;
+const Progress = styled.div`
+  height: 10px;
+  width: 8%;
   border-radius: 5px;
-  font-family: "NotoSansKR";
-  min-height: 30px;
-  min-width: 120px;
+  background-color: ${(props) => (props.isGreen ? "#50e293" : "#E2E2E2")};
+`;
+const SubmitButton = styled.button`
+  height: 50px;
+  width: 86%;
+  margin-left: 7%;
+  margin-right: 7%;
+  margin-top: 5%;
+  border-radius: 20px;
+  background-color: #e2e2e2;
+  border: none;
+  align-items: center;
 `;
 
-function SurveyPage() {
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [currentTheme, setCurrentTheme] = useState(0);
-  const [showSubmit, setShowSubmit] = useState(false); // 상태 추가
-  const [showResults, setShowResults] = useState(false);
-  const [answers, setAnswers] = useState({});
-  const [currentAnswerKey, setCurrentAnswerKey] = useState(0);
+const SurveyPage = () => {
+  const [surveystep, setSurveyStep] = useState(1);
+  const [selectedReply, setSelectedReply] = useState(null);
+  const [surveyresponse, setSurveyresponse] = useState({});
+  const [arrowImage, setArrowImage] = useState(RightArrow);
+
+  const handleReplyClick = (index) => {
+    setSelectedReply(index);
+    setSurveyresponse({ ...surveyresponse, [surveystep]: index });
+    setArrowImage(RightArrow_active);
+  };
+
+  const handleFormSubmit = (event) => {
+    event.preventDefault();
+    console.log(surveyresponse);
+  };
+
   const navigate = useNavigate();
-
-  const themes = [
-    "목적지 스타일",
-    "목적지 스타일",
-    "즐기는 스타일",
-    "즐기는 스타일",
-    "즐기는 스타일",
-    "즐기는 스타일",
-    "숙박",
-    "숙박",
-  ];
-
-  const questions = [
-    "자연 휴양지에 가깝다면 1, 도시에 가깝다면 5",
-    "한적한 숨은 여행지에 가깝다면 1, 유명 핫 플레이스에 가깝다면 5",
-    "무계획 여행은 1, 계획적인 여행은 5",
-    "타이트한 일정으로 알차게 여행에 가깝다면 1, 여유있는 여행에 가깝다면 5",
-    "사진 촬영 안 중요하면 1, 사진 촬영 중요하면 5",
-    "맛집 딱히 상관없다면 1, 맛집 식도락 여행하고 싶으면 5",
-    "당일치기 여행에 가깝다면 1, 숙소 필수라면 5",
-    "불편해도 싸면 장땡 1 비싸도 편하길 원하면 5",
-  ];
-
-  const answerKeys = [
-    "preferNatureThanCity",
-    "preferNewCity",
-    "preferDetailPlan",
-    "preferTightSchedule",
-    "preferManyPhotos",
-    "preferGoodFood",
-    "preferDayTrip",
-    "preferCheapHotelThanComfort",
-  ];
-
-  const answerOptions = [
-    ["1", "2", "3", "4", "5"],
-    ["1", "2", "3", "4", "5"],
-    ["1", "2", "3", "4", "5"],
-    ["1", "2", "3", "4", "5"],
-    ["1", "2", "3", "4", "5"],
-    ["1", "2", "3", "4", "5"],
-    ["1", "2", "3", "4", "5"],
-    ["1", "2", "3", "4", "5"],
-  ];
-
-  const handleNextQuestion = (question, answer) => {
-    const updatedAnswers = { ...answers, [question]: parseInt(answer, 10) };
-    setAnswers(updatedAnswers);
-
-    if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-      setCurrentTheme(currentTheme + 1);
-      setCurrentAnswerKey(currentAnswerKey + 1);
-    } else if (currentQuestion === questions.length - 1) {
-      setShowSubmit(true);
-    }
+  const moveToNextStepButtonClick = () => {
+    setSurveyStep((prevStep) => prevStep + 1);
+    setSelectedReply(null);
+    setArrowImage(RightArrow);
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault(); // 폼 기본 동작 막아주는 거
+  let currentSurveyComponent;
 
-    const answersJSON = JSON.stringify(answers); // JSON으로 변환
+  switch (surveystep) {
+    case 0:
 
-    console.log(answersJSON);
-    setShowResults(true);
-    setTimeout(() => {
-      navigate("/map");
-    }, 3000);
-  };
+    case 1:
+      currentSurveyComponent = (
+        <form onSubmit={handleFormSubmit}>
+          <QuestionContainer>
+            <TitleBold style={{ textAlign: "center" }}>Q1.</TitleBold>
+            <SubTitleMedium style={{ textAlign: "center" }}>
+              휴가를 보낼 때, <br /> 자연 휴양지와 도시 중 <br /> 어디를 더
+              선호하시나요?
+            </SubTitleMedium>
+            <ReplyRow>
+              {Array(5)
+                .fill()
+                .map((_, index) => (
+                  <Replycontent
+                    key={index}
+                    isSelected={selectedReply === index}
+                    onClick={() => handleReplyClick(index)}
+                  />
+                ))}
+            </ReplyRow>
+            <Replytext>
+              <BodyBold12>자연 휴양지</BodyBold12>
+              <BodyBold12>도시</BodyBold12>
+            </Replytext>
+          </QuestionContainer>
+          <ProgressContainer>
+            <Progress isGreen />
+            <Progress />
+            <Progress />
+            <Progress />
+            <Progress />
+            <Progress />
+            <Progress />
+          </ProgressContainer>
+          <SubmitButton type="submit">
+            <BodyBold15 style={{ textAlign: "center" }}>제출하기</BodyBold15>
+          </SubmitButton>
+        </form>
+      );
+      break;
+
+    case 2:
+      currentSurveyComponent = (
+        <form onSubmit={handleFormSubmit}>
+          <QuestionContainer>
+            <TitleBold style={{ textAlign: "center" }}>Q2.</TitleBold>
+            <SubTitleMedium style={{ textAlign: "center" }}>
+              한적하고 숨은 여행지와 <br /> 유명 핫 플레이스 중<br /> 꼭 가야
+              하는 곳은 어디인가요?
+            </SubTitleMedium>
+            <ReplyRow>
+              {Array(5)
+                .fill()
+                .map((_, index) => (
+                  <Replycontent
+                    key={index}
+                    isSelected={selectedReply === index}
+                    onClick={() => handleReplyClick(index)}
+                  />
+                ))}
+            </ReplyRow>
+            <Replytext>
+              <BodyBold12>한적한 여행지</BodyBold12>
+              <BodyBold12>핫 플레이스</BodyBold12>
+            </Replytext>
+          </QuestionContainer>
+          <ProgressContainer>
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress />
+            <Progress />
+            <Progress />
+            <Progress />
+            <Progress />
+          </ProgressContainer>
+          <SubmitButton type="submit">
+            <BodyBold15 style={{ textAlign: "center" }}>제출하기</BodyBold15>
+          </SubmitButton>
+        </form>
+      );
+      break;
+
+    case 3:
+      currentSurveyComponent = (
+        <form onSubmit={handleFormSubmit}>
+          <QuestionContainer>
+            <TitleBold style={{ textAlign: "center" }}>Q3.</TitleBold>
+            <SubTitleMedium style={{ textAlign: "center" }}>
+              프리하고 계획 없는 여행과 <br /> 알찬 계획과 일정이 있는 여행 중{" "}
+              <br /> 어느 스타일에 더 가까우신가요?
+            </SubTitleMedium>
+            <ReplyRow>
+              {Array(5)
+                .fill()
+                .map((_, index) => (
+                  <Replycontent
+                    key={index}
+                    isSelected={selectedReply === index}
+                    onClick={() => handleReplyClick(index)}
+                  />
+                ))}
+            </ReplyRow>
+            <Replytext>
+              <BodyBold12>프리스타일</BodyBold12>
+              <BodyBold12>알찬 계획</BodyBold12>
+            </Replytext>
+          </QuestionContainer>
+          <ProgressContainer>
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress />
+            <Progress />
+            <Progress />
+            <Progress />
+          </ProgressContainer>
+          <SubmitButton type="submit">
+            <BodyBold15 style={{ textAlign: "center" }}>제출하기</BodyBold15>
+          </SubmitButton>
+        </form>
+      );
+      break;
+
+    case 4:
+      currentSurveyComponent = (
+        <form onSubmit={handleFormSubmit}>
+          <QuestionContainer>
+            <TitleBold style={{ textAlign: "center" }}>Q4.</TitleBold>
+            <SubTitleMedium style={{ textAlign: "center" }}>
+              남는 건 사진 뿐!
+              <br /> 사진보다 지금 현재가 중요하다! <br /> 어느 쪽에
+              동의하시나요?
+            </SubTitleMedium>
+            <ReplyRow>
+              {Array(5)
+                .fill()
+                .map((_, index) => (
+                  <Replycontent
+                    key={index}
+                    isSelected={selectedReply === index}
+                    onClick={() => handleReplyClick(index)}
+                  />
+                ))}
+            </ReplyRow>
+            <Replytext>
+              <BodyBold12>별로 중요하지 않음</BodyBold12>
+              <BodyBold12>사진 촬영 필수</BodyBold12>
+            </Replytext>
+          </QuestionContainer>
+          <ProgressContainer>
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress />
+            <Progress />
+            <Progress />
+          </ProgressContainer>
+          <SubmitButton type="submit">
+            <BodyBold15 style={{ textAlign: "center" }}>제출하기</BodyBold15>
+          </SubmitButton>
+        </form>
+      );
+      break;
+
+    case 5:
+      currentSurveyComponent = (
+        <form onSubmit={handleFormSubmit}>
+          <QuestionContainer>
+            <TitleBold style={{ textAlign: "center" }}>Q5.</TitleBold>
+            <SubTitleMedium style={{ textAlign: "center" }}>
+              맛집 식도락 여행과 <br /> 맛집 상관없이 관광지 방문 중 <br /> 어느
+              것이 더 끌리시나요?
+            </SubTitleMedium>
+            <ReplyRow>
+              {Array(5)
+                .fill()
+                .map((_, index) => (
+                  <Replycontent
+                    key={index}
+                    isSelected={selectedReply === index}
+                    onClick={() => handleReplyClick(index)}
+                  />
+                ))}
+            </ReplyRow>
+            <Replytext>
+              <BodyBold12>관광지 방문</BodyBold12>
+              <BodyBold12>식도락 여행</BodyBold12>
+            </Replytext>
+          </QuestionContainer>
+          <ProgressContainer>
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress />
+            <Progress />
+          </ProgressContainer>
+          <SubmitButton type="submit">
+            <BodyBold15 style={{ textAlign: "center" }}>제출하기</BodyBold15>
+          </SubmitButton>
+        </form>
+      );
+      break;
+
+    case 6:
+      currentSurveyComponent = (
+        <form onSubmit={handleFormSubmit}>
+          <QuestionContainer>
+            <TitleBold style={{ textAlign: "center" }}>Q6.</TitleBold>
+            <SubTitleMedium style={{ textAlign: "center" }}>
+              당일치기 여행과 <br /> 여행 기간이 이틀 이상인 여행 중 <br /> 더
+              가고 싶은 여행은 어느 쪽인가요?
+            </SubTitleMedium>
+            <ReplyRow>
+              {Array(5)
+                .fill()
+                .map((_, index) => (
+                  <Replycontent
+                    key={index}
+                    isSelected={selectedReply === index}
+                    onClick={() => handleReplyClick(index)}
+                  />
+                ))}
+            </ReplyRow>
+            <Replytext>
+              <BodyBold12>당일치기</BodyBold12>
+              <BodyBold12>숙소는 필수</BodyBold12>
+            </Replytext>
+          </QuestionContainer>
+          <ProgressContainer>
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress />
+          </ProgressContainer>
+          <SubmitButton type="submit">
+            <BodyBold15 style={{ textAlign: "center" }}>제출하기</BodyBold15>
+          </SubmitButton>
+        </form>
+      );
+      break;
+
+    case 7:
+      currentSurveyComponent = (
+        <form onSubmit={handleFormSubmit}>
+          <QuestionContainer>
+            <TitleBold style={{ textAlign: "center" }}>Q7.</TitleBold>
+            <SubTitleMedium style={{ textAlign: "center" }}>
+              불편해도 가격이 저렴한 여행과 <br /> 가심비를 추구하는 편한 여행
+              중<br /> 어느 것을 더 선호하시나요? ={" "}
+            </SubTitleMedium>
+            <ReplyRow>
+              {Array(5)
+                .fill()
+                .map((_, index) => (
+                  <Replycontent
+                    key={index}
+                    isSelected={selectedReply === index}
+                    onClick={() => handleReplyClick(index)}
+                  />
+                ))}
+            </ReplyRow>
+            <Replytext>
+              <BodyBold12>가격 저렴</BodyBold12>
+              <BodyBold12>편한 여행</BodyBold12>
+            </Replytext>
+          </QuestionContainer>
+          <ProgressContainer>
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress isGreen />
+            <Progress isGreen />
+          </ProgressContainer>
+          <SubmitButton type="submit">
+            <BodyBold15 style={{ textAlign: "center" }}>제출하기</BodyBold15>
+          </SubmitButton>
+        </form>
+      );
+      break;
+
+    default:
+      currentSurveyComponent = null;
+  }
 
   return (
     <SurveyContainer>
-      {showResults ? (
-        <div>
-          <p className="completeSurvey">수고하셨습니다!</p>
-        </div>
-      ) : (
-        <form>
-          <p className="survey-title">#{themes[currentTheme]}</p>
-          <QuestionContainer>
-            <p className="question">{questions[currentQuestion]}</p>
-            <div className="answer-options">
-              {answerOptions[currentQuestion].map((option, index) => (
-                <label key={index}>
-                  <SelectButton
-                    key={index}
-                    onClick={() =>
-                      handleNextQuestion(answerKeys[currentAnswerKey], option)
-                    }
-                  >
-                    {option}
-                  </SelectButton>
-                </label>
-              ))}
-            </div>
-          </QuestionContainer>
-          {showSubmit && ( //showSubmit은 마지막 질문의 선택지가 눌리면 -> hadleNextQuestion 동작 -> 그때서야 true가 됨. (= 제출 버튼 생성)
-            <button type="submit" onClick={handleSubmit}>
-              제출
-            </button>
-            // 버튼 눌리면 -> handleSubmit -> setShowResults가 true가 되면서 -> 설문조사 완료했다는 페이지, 혹은 렌더링 페이지로 넘어가면 될듯
-          )}
-        </form>
-      )}
+      {currentSurveyComponent}
+      <RightArrowButton>
+        <RightArrowIcon src={arrowImage} onClick={moveToNextStepButtonClick} />
+      </RightArrowButton>
     </SurveyContainer>
   );
-}
+};
 
 export default SurveyPage;
-
-/*const handleSubmit = (event) => {
-  event.preventDefault(); // 폼의 기본 동작 방지
-
-  // answers를 JSON 형식으로 변환
-  const answersJSON = JSON.stringify(answers);
-
-  fetch('/survey', { // 서버의 URL로 바꾸세요
-    method: 'POST', // POST 메서드를 사용
-    headers: {
-      'Content-Type': 'application/json', // JSON 데이터를 보낸다고 명시
-    },
-    body: answersJSON, // JSON 형식의 데이터를 요청 본문에 넣음
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    })
-    .then((data) => {
-      console.log('서버로부터 응답 받음:', data);
-      setShowResults(true); // 서버로부터 응답을 성공적으로 받았을 때 결과를 표시
-    })
-    .catch((error) => {
-      console.error('오류:', error);
-    });
-};*/
