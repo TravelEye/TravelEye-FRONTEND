@@ -16,8 +16,11 @@ import docu2 from "../assets/images/docu2.png";
 import postbox from "../assets/images/postbox.png";
 import oneonone from "../assets/images/oneonone.png";
 import version from "../assets/images/version.png";
+
 const Imageset = styled.img`
   margin-left: 5%;
+  height: 30px;
+  width: 30px;
 `;
 const HeaderContainer = styled.div`
   display: flex;
@@ -72,7 +75,7 @@ const OperatingContainer = styled.div`
   margin: 10px;
   height: 50px;
   display: flex;
-  justify-content: flex-start;896
+  justify-content: flex-start;
   align-items: center;
   gap: 7%;
 `;
@@ -81,6 +84,8 @@ const ProfileButton = styled.button``;
 
 const Mypage = () => {
   const navigate = useNavigate();
+  const accessToken = localStorage.getItem("accessToken");
+
   const handleProfileButtonClick = () => {
     navigate("/myprofile", { state: { information: myinfo } });
   };
@@ -90,8 +95,7 @@ const Mypage = () => {
       try {
         const response = await axios.get("http://127.0.0.1:80/member/myinfo", {
           headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMkBnbWFpbC5jb20iLCJhdXRoIjoiVVNFUiIsImV4cCI6MTcwMzE0NDM4N30.MWRiS8ixj5yRg8-ayydUQgUImnrA9_HRFYJik4iZ8fUHPDDhySEqw0K-NUR_1__I2jXuev7UZC6fWCom_U4uoQ",
+            Authorization: `Bearer ${accessToken}`,
           },
         });
 
@@ -102,8 +106,23 @@ const Mypage = () => {
         console.error("Error fetching trip data:", error);
       }
     };
+    const fetchData2 = async () => {
+      try {
+        const response = await axios.get("http://127.0.0.1:80/food/favorites", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        console.log(response.data);
+        console.log(myinfo);
+      } catch (error) {
+        console.error("Error fetching trip data:", error);
+      }
+    };
 
     fetchData();
+    fetchData2();
   }, []);
 
   const initialnickname = "맑눈광";

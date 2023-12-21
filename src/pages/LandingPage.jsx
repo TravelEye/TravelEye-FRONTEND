@@ -141,6 +141,10 @@ const tripData = [
 
 const LandingPage = () => {
   const navigate = useNavigate();
+  const [accessToken, setAccessToken] = useState(
+    localStorage.getItem("accessToken")
+  );
+
   const handleMakeTripButtonClick = () => {
     navigate("/maketrip");
   };
@@ -150,12 +154,12 @@ const LandingPage = () => {
       try {
         const response = await axios.get("http://127.0.0.1:80/trip/all", {
           headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMkBnbWFpbC5jb20iLCJhdXRoIjoiVVNFUiIsImV4cCI6MTcwMzE0NDM4N30.MWRiS8ixj5yRg8-ayydUQgUImnrA9_HRFYJik4iZ8fUHPDDhySEqw0K-NUR_1__I2jXuev7UZC6fWCom_U4uoQ",
+            Authorization: `Bearer ${accessToken}`,
           },
         });
 
         setTrips(response.data.data);
+        console.log(response.data.data);
         console.log(trips);
       } catch (error) {
         console.error("Error fetching trip data:", error);

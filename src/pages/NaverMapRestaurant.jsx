@@ -5,6 +5,7 @@ import axios from "axios";
 import addr_spoon from "../assets/images/addr_spoon.png";
 import zzim_on from "../assets/images/zzim_on.png";
 import zzim_off from "../assets/images/zzim_off.png";
+import { useTripContext } from "./TripContext";
 
 const TripControlButtonContainer = styled.div`
   position: absolute;
@@ -97,6 +98,7 @@ const NavermyMapRestaurant = () => {
   const [restaurants, setRestaurants] = useState([]);
   const [bottomSheetHeight, setBottomSheetHeight] = useState("10%"); // 추가된 부분
   const [isZzimOn, setZzimon] = useState(false);
+  const { updatedTripData } = useTripContext();
 
   const toggleBottomSheet = () => {
     setBottomSheetOpen(!isBottomSheetOpen);
@@ -153,25 +155,27 @@ const NavermyMapRestaurant = () => {
 
       let bounds = new window.google.maps.LatLngBounds();
       const infowindow = new window.google.maps.InfoWindow();
-      plans[activePlan].forEach(({ name, lat, lng, type }, planIndex) => {
-        const marker = new window.google.maps.Marker({
-          position: { lat, lng },
-          name,
-          map,
-          icon: {
-            url: "./plans.png",
-            scaledSize: new window.google.maps.Size(40, 40),
-          },
-        });
+      updatedTripData.memos.forEach(
+        ({ title, latitude, longitude, type }, planIndex) => {
+          const marker = new window.google.maps.Marker({
+            position: new window.google.maps.LatLng(latitude, longitude),
+            title,
+            map,
+            icon: {
+              url: "./plans.png",
+              scaledSize: new window.google.maps.Size(40, 40),
+            },
+          });
 
-        bounds.extend(marker.position);
+          bounds.extend(marker.position);
 
-        marker.addListener("click", () =>
-          handleMarkerClick(marker, map, infowindow)
-        );
+          marker.addListener("click", () =>
+            handleMarkerClick(marker, map, infowindow)
+          );
 
-        partnerMarkers.push(marker);
-      });
+          partnerMarkers.push(marker);
+        }
+      );
 
       map.fitBounds(bounds);
     };

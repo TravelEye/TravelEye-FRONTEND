@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import sample from "../assets/images/sample.png";
 import temperature_bar from "../assets/images/temperature_bar.png";
@@ -228,6 +228,8 @@ const triphistory = [
 
 const UserProfilePage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const username = location?.state?.partnername || null;
 
   const handleArrowButtonClick = () => {
     navigate(-1);
@@ -258,16 +260,16 @@ const UserProfilePage = () => {
       </TopHalf>
       <BottomHalf>
         <RoundRectangle>
-          <Usernametext>{initialusername}</Usernametext>
+          <Usernametext>{username}</Usernametext>
           <IntroductionText>{initialintroduction}</IntroductionText>
-          <TempText>{initialusername} 님의 여행 온도</TempText>
+          <TempText>{username} 님의 여행 온도</TempText>
           <TemperatureBar temperature={initialTemperature} />
           <TemperatureBar2 src={temperature_bar} />
           <TemperatureNotifier temperature={initialTemperature}>
             <TriangleContainer />
             <Temperaturevalue>{initialTemperature}℃</Temperaturevalue>
           </TemperatureNotifier>
-          <TempText>{initialusername} 님의 여행 히스토리</TempText>
+          <TempText>{username} 님의 여행 히스토리</TempText>
           {triphistory.map((trip, index) => (
             <HistoryContainer key={index}>
               <ImageContainer>

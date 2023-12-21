@@ -6,7 +6,7 @@ import axios from "../../config/";
 // }
 export const loginAPI = async (data) => {
   try {
-    const response = await axios.post("/login", data);
+    const response = await axios.post("http://127.0.0.1:80/login", data);
     const tokenData = response.data.data.tokenDTO;
     // Token을 Axios 헤더에 설정
     axios.defaults.headers.common[

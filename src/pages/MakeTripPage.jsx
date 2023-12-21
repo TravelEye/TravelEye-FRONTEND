@@ -308,6 +308,8 @@ const Datetext = styled.div`
 `;
 const MakeTripPage = () => {
   const navigate = useNavigate();
+  const accessToken = localStorage.getItem("accessToken");
+
   const [step, setStep] = useState(1);
 
   const handleArrowButtonClick = () => {
@@ -410,8 +412,7 @@ const MakeTripPage = () => {
         tripData,
         {
           headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMkBnbWFpbC5jb20iLCJhdXRoIjoiVVNFUiIsImV4cCI6MTcwMzE0NDM4N30.MWRiS8ixj5yRg8-ayydUQgUImnrA9_HRFYJik4iZ8fUHPDDhySEqw0K-NUR_1__I2jXuev7UZC6fWCom_U4uoQ",
+            Authorization: `Bearer ${accessToken}`,
             "Content-Type": "application/json",
           },
         }

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import addr_person from "../assets/images/addr_person.png";
 import { act } from "react-dom/test-utils";
 import styled from "styled-components";
+import { useNavigate } from "react-router";
 import {
   TitleBold,
   SubTitleMedium,
@@ -11,6 +12,7 @@ import {
   BodyBold12,
 } from "./fonts.js";
 import sample from "../assets/images/sample.png";
+import { useTripContext } from "./TripContext";
 
 const TripControlButtonContainer = styled.div`
   position: absolute;
@@ -104,6 +106,9 @@ const CircularImageElement = styled.img`
 `;
 
 const NavermyMap = () => {
+  const navigate = useNavigate();
+  const { updatedTripData } = useTripContext();
+
   const [partnerMarkers, setPartnerMarkers] = useState([]);
   const [activePlan, setActivePlan] = useState(0);
   const [isBottomSheetOpen, setBottomSheetOpen] = useState(true);
@@ -335,65 +340,67 @@ const NavermyMap = () => {
       });
       let bounds = new window.google.maps.LatLngBounds();
       const infowindow = new window.google.maps.InfoWindow();
-      plans[activePlan].forEach(({ name, lat, lng, type }, planIndex) => {
-        const marker = new window.google.maps.Marker({
-          position: { lat, lng },
-          name,
-          map,
-          icon: {
-            url: "./plans.png",
-            scaledSize: new window.google.maps.Size(40, 40),
-          },
-        });
-
-        bounds.extend(marker.position);
-
-        marker.addListener("click", () => {
-          map.panTo(marker.position);
-          infowindow.setContent(name);
-          infowindow.open({
-            anchor: marker,
+      updatedTripData.memos.forEach(
+        ({ title, latitude, longitude, type }, planIndex) => {
+          const marker = new window.google.maps.Marker({
+            position: new window.google.maps.LatLng(latitude, longitude),
+            title,
             map,
+            icon: {
+              url: "./plans.png",
+              scaledSize: new window.google.maps.Size(40, 40),
+            },
           });
 
-          const newBounds = new window.google.maps.LatLngBounds();
-          const partnersData = [];
+          bounds.extend(marker.position);
 
-          plan_partners[activePlan][planIndex].forEach(
-            ({ name, planname, character, plan, temperature, lat, lng }) => {
-              const partnerLatLng = new window.google.maps.LatLng(lat, lng);
-              newBounds.extend(partnerLatLng);
+          marker.addListener("click", () => {
+            map.panTo(marker.position);
+            infowindow.setContent(title);
+            infowindow.open({
+              anchor: marker,
+              map,
+            });
 
-              const marker1 = new window.google.maps.Marker({
-                position: { lat, lng },
-                map,
-                icon: {
-                  url: addr_person,
-                  scaledSize: new window.google.maps.Size(50, 66.67),
-                },
-                label: {
-                  text: name,
-                  labelOrigin: new window.google.maps.Point(20, 40), // 레이블 원점 조절
-                },
-              });
-              partnersData.push({
-                name,
-                planname,
-                character,
-                plan,
-                temperature,
-              });
-            }
-          );
+            const newBounds = new window.google.maps.LatLngBounds();
+            const partnersData = [];
 
-          console.log(viewPartners);
-          bounds = newBounds;
-          console.log(bounds);
-          map.fitBounds(bounds);
+            plan_partners[activePlan][planIndex].forEach(
+              ({ name, planname, character, plan, temperature, lat, lng }) => {
+                const partnerLatLng = new window.google.maps.LatLng(lat, lng);
+                newBounds.extend(partnerLatLng);
 
-          setViewPartners(partnersData);
-        });
-      });
+                const marker1 = new window.google.maps.Marker({
+                  position: { lat, lng },
+                  map,
+                  icon: {
+                    url: addr_person,
+                    scaledSize: new window.google.maps.Size(50, 66.67),
+                  },
+                  label: {
+                    text: name,
+                    labelOrigin: new window.google.maps.Point(20, 40), // 레이블 원점 조절
+                  },
+                });
+                partnersData.push({
+                  name,
+                  planname,
+                  character,
+                  plan,
+                  temperature,
+                });
+              }
+            );
+
+            console.log(viewPartners);
+            bounds = newBounds;
+            console.log(bounds);
+            map.fitBounds(bounds);
+
+            setViewPartners(partnersData);
+          });
+        }
+      );
       map.fitBounds(bounds);
     };
 
@@ -409,6 +416,9 @@ const NavermyMap = () => {
 
   const handlePlanButtonClick = (index) => {
     setActivePlan(index);
+  };
+  const handleProfileClick = (partnerName) => {
+    navigate("/userprofile", { state: { partnername: partnerName } });
   };
 
   return (
@@ -428,7 +438,10 @@ const NavermyMap = () => {
         <BottomSheet style={{ height: bottomSheetHeight }}>
           <BottomSheetBar onClick={toggleBottomSheet} />
           {viewPartners.map((partner, index) => (
-            <BottomSheetContent key={index}>
+            <BottomSheetContent
+              key={index}
+              onClick={() => handleProfileClick(partner.name)}
+            >
               <ProfilImageContainer>
                 <CircularImageElement src={sample} alt="Circular" />
               </ProfilImageContainer>

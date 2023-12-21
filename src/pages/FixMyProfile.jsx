@@ -155,6 +155,8 @@ const SNSIcon = styled.img`
 `;
 const FixMyProfilePage = () => {
   const navigate = useNavigate();
+  const accessToken = localStorage.getItem("accessToken");
+
   const location = useLocation();
   const information = location?.state?.information || null;
   console.log(information);
@@ -172,8 +174,7 @@ const FixMyProfilePage = () => {
         },
         {
           headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMkBnbWFpbC5jb20iLCJhdXRoIjoiVVNFUiIsImV4cCI6MTcwMzE0NDM4N30.MWRiS8ixj5yRg8-ayydUQgUImnrA9_HRFYJik4iZ8fUHPDDhySEqw0K-NUR_1__I2jXuev7UZC6fWCom_U4uoQ",
+            Authorization: `Bearer ${accessToken}`,
             "Content-type": "application/json",
           },
         }

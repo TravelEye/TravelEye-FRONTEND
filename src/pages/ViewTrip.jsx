@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import styled from "styled-components";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
@@ -17,10 +17,229 @@ import {
   BodyBold12,
 } from "./fonts.js";
 import { format } from "date-fns";
+import { useTripContext } from "./TripContext";
 
 const LandmarkSet = [
-  "아시아, 대한민국, 서울, 만장굴",
-  "아시아, 대한민국, 서귀포, 한라산",
+  {
+    id: 1,
+    continent: "아시아",
+    country: "대한민국",
+    province: "제주도",
+    city: "제주시",
+    title: "만장굴",
+    latitude: "33.489011",
+    longitude: "126.498302",
+    address: "123 제주대로",
+  },
+  {
+    id: 2,
+    continent: "아시아",
+    country: "대한민국",
+    province: "제주도",
+    city: "제주시",
+    title: "성산일출봉",
+    latitude: "33.459759",
+    longitude: "126.937927",
+    address: "456 제주해안로",
+  },
+  {
+    id: 3,
+    continent: "아시아",
+    country: "대한민국",
+    province: "제주도",
+    city: "제주시",
+    title: "평화의 소녀상",
+    latitude: "33.489868",
+    longitude: "126.481713",
+    address: "789 갈치로",
+  },
+  {
+    id: 4,
+    continent: "아시아",
+    country: "대한민국",
+    province: "제주도",
+    city: "제주시",
+    title: "용두암",
+    latitude: "33.516178",
+    longitude: "126.525971",
+    address: "101 도령로",
+  },
+  {
+    id: 5,
+    continent: "아시아",
+    country: "대한민국",
+    province: "제주도",
+    city: "제주시",
+    title: "한라산",
+    latitude: "33.359305",
+    longitude: "126.548059",
+    address: "202 한라로",
+  },
+  {
+    id: 6,
+    continent: "아시아",
+    country: "대한민국",
+    province: "제주도",
+    city: "제주시",
+    title: "오설록 티 뮤지엄",
+    latitude: "33.306987",
+    longitude: "126.392786",
+    address: "303 효돈로",
+  },
+  {
+    id: 7,
+    continent: "아시아",
+    country: "대한민국",
+    province: "제주도",
+    city: "제주시",
+    title: "제주 돌문화 공원",
+    latitude: "33.447898",
+    longitude: "126.558453",
+    address: "404 토산로",
+  },
+  {
+    id: 8,
+    continent: "아시아",
+    country: "대한민국",
+    province: "제주도",
+    city: "제주시",
+    title: "마라도 해양도서관",
+    latitude: "33.290348",
+    longitude: "126.297408",
+    address: "505 도남로",
+  },
+  {
+    id: 9,
+    continent: "아시아",
+    country: "대한민국",
+    province: "제주도",
+    city: "제주시",
+    title: "천지연 폭포",
+    latitude: "33.510936",
+    longitude: "126.527529",
+    address: "606 삼무로",
+  },
+  {
+    id: 10,
+    continent: "아시아",
+    country: "대한민국",
+    province: "제주도",
+    city: "제주시",
+    title: "올레길 7코스",
+    latitude: "33.362346",
+    longitude: "126.531989",
+    address: "707 제주로",
+  },
+  {
+    id: 11,
+    continent: "아시아",
+    country: "대한민국",
+    province: "제주도",
+    city: "제주시",
+    title: "한담동 선인장마을",
+    latitude: "33.497788",
+    longitude: "126.516836",
+    address: "808 선인장로",
+  },
+  {
+    id: 12,
+    continent: "아시아",
+    country: "대한민국",
+    province: "제주도",
+    city: "제주시",
+    title: "사려니숲길",
+    latitude: "33.394506",
+    longitude: "126.668412",
+    address: "909 사려니로",
+  },
+  {
+    id: 13,
+    continent: "아시아",
+    country: "대한민국",
+    province: "제주도",
+    city: "제주시",
+    title: "제주민속촌",
+    latitude: "33.436091",
+    longitude: "126.305229",
+    address: "1010 돌하르방로",
+  },
+  {
+    id: 14,
+    continent: "아시아",
+    country: "대한민국",
+    province: "제주도",
+    city: "제주시",
+    title: "이중섭 거리",
+    latitude: "33.513095",
+    longitude: "126.527222",
+    address: "1111 이중섭로",
+  },
+  {
+    id: 15,
+    continent: "아시아",
+    country: "대한민국",
+    province: "제주도",
+    city: "제주시",
+    title: "제주항",
+    latitude: "33.514062",
+    longitude: "126.523163",
+    address: "1212 일주동로",
+  },
+  {
+    id: 16,
+    continent: "아시아",
+    country: "대한민국",
+    province: "제주도",
+    city: "제주시",
+    title: "헌릉로",
+    latitude: "33.483204",
+    longitude: "126.476785",
+    address: "1313 헌릉로",
+  },
+  {
+    id: 17,
+    continent: "아시아",
+    country: "대한민국",
+    province: "제주도",
+    city: "제주시",
+    title: "올레길 6코스",
+    latitude: "33.411399",
+    longitude: "126.270282",
+    address: "1414 제주로",
+  },
+  {
+    id: 18,
+    continent: "아시아",
+    country: "대한민국",
+    province: "제주도",
+    city: "제주시",
+    title: "서귀포 동문시장",
+    latitude: "33.246563",
+    longitude: "126.509795",
+    address: "1515 서문로",
+  },
+  {
+    id: 19,
+    continent: "아시아",
+    country: "대한민국",
+    province: "제주도",
+    city: "제주시",
+    title: "산방산",
+    latitude: "33.350481",
+    longitude: "126.818004",
+    address: "1616 산방로",
+  },
+  {
+    id: 20,
+    continent: "아시아",
+    country: "대한민국",
+    province: "제주도",
+    city: "제주시",
+    title: "송악산",
+    latitude: "33.328504",
+    longitude: "126.749515",
+    address: "1717 송악로",
+  },
 ];
 
 const ViewTripContainer = styled.div`
@@ -104,11 +323,7 @@ const PlaceContent = styled.div`
   flex-direction: column;
   margin-right: 20%;
 `;
-const trip1 = {
-  tripname: "힐링제주여행",
-  startDate: new Date("2024-03-13T00:01:01"),
-  endDate: new Date("2024-03-18T00:01:01"),
-};
+
 const Buttons = styled.div`
   display: flex;
   justify-content: center;
@@ -227,11 +442,22 @@ const PlaceComponent = ({ placeName, placeAddress, onRemove }) => {
 const ViewTripPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const tripData = location?.state?.tripData || null;
+  const { setUpdatedTripData } = useTripContext();
+
+  const accessToken = localStorage.getItem("accessToken");
   const selectedLandmark = location?.state?.selectedLandmark || "";
   const [showAddPlaceOverlay, setShowAddPlaceOverlay] = useState(false);
   const [newPlaceName, setNewPlaceName] = useState("");
-  const [editingDayIndex, setEditingDayIndex] = useState(null); // Add this line
-
+  const [editingDayIndex, setEditingDayIndex] = useState(null);
+  const [memos, setMemos] = useState([]);
+  useEffect(() => {
+    if (tripData && tripData.memos !== null) {
+      setMemos(tripData.memos);
+    } else {
+      setMemos([]);
+    }
+  }, [tripData]);
   const generateDays = (startDateString, endDateString) => {
     const days = [];
     let currentDate = new Date(startDateString);
@@ -252,14 +478,31 @@ const ViewTripPage = () => {
     setShowAddPlaceOverlay(true);
     setEditingDayIndex(dayIndex);
   };
-
-  const handleAddPlaceConfirm = (plname) => {
-    console.log(1);
-
+  console.log(accessToken);
+  const handleAddPlaceConfirm = (plname, index) => {
     const newPlace = {
       name: plname,
-      address: "대전광역시 서구 둔산대로 169",
+      address: LandmarkSet[index].address,
+      id: LandmarkSet[index].id,
     };
+    const startDate = new Date(tripData.startDate);
+    startDate.setDate(startDate.getDate() + editingDayIndex);
+
+    const newMemo = {
+      landmarkId: index + 1,
+      date: startDate.toISOString(),
+      latitude: parseFloat(LandmarkSet[index].latitude),
+      longitude: parseFloat(LandmarkSet[index].longitude),
+      title: LandmarkSet[index].title,
+      country: LandmarkSet[index].country,
+      city: LandmarkSet[index].city,
+
+      address: LandmarkSet[index].address,
+    };
+
+    setMemos((prevMemos) => [...prevMemos, newMemo]);
+
+    console.log(memos);
 
     setDays((prevPlaces) => {
       const updatedPlaces = [...prevPlaces];
@@ -273,11 +516,23 @@ const ViewTripPage = () => {
   };
   const handleRemovePlace = (editingDayIndex, placeIndex) => {
     setDays((prevDays) => {
+      const removedPlace = prevDays[editingDayIndex].places[placeIndex];
+
+      setMemos((prevMemos) => {
+        const updatedMemos = prevMemos.filter(
+          (memo) =>
+            memo.landmarkId !== removedPlace.id ||
+            memo.date !== prevDays[editingDayIndex].date.toISOString()
+        );
+        return updatedMemos;
+      });
+
       const updatedDays = [...prevDays];
       updatedDays[editingDayIndex].places.splice(placeIndex, 1);
       return updatedDays;
     });
   };
+
   const [searchText, setSearchText] = useState("");
 
   const handleSearchInputChange = (e) => {
@@ -290,15 +545,21 @@ const ViewTripPage = () => {
     setFiltereLandmarks(filteredResults);
   };
 
-  const handleLandmarkClick = (selectedLandmark) => {
+  const handleLandmarkClick = (selectedLandmark, index) => {
     setNewPlaceName(selectedLandmark);
-    console.log(selectedLandmark);
-    console.log(newPlaceName);
-    handleAddPlaceConfirm(selectedLandmark);
+    handleAddPlaceConfirm(selectedLandmark, index);
   };
 
-  const [filteredLandmarks, setFiltereLandmarks] = useState(LandmarkSet);
-  const tripData = location?.state?.tripData || null;
+  const initialFilteredLandmarks = LandmarkSet.map(
+    ({ continent, country, city, title }) => {
+      return `${continent}, ${country}, ${city}, ${title}`;
+    }
+  );
+
+  const [filteredLandmarks, setFiltereLandmarks] = useState(
+    initialFilteredLandmarks
+  );
+  console.log(filteredLandmarks);
 
   useEffect(() => {
     if (tripData) {
@@ -312,6 +573,72 @@ const ViewTripPage = () => {
   const handleleftClick = () => {
     navigate(-1);
   };
+
+  const handleUpdateTrip = async () => {
+    const updatedTripData = {
+      tripId: tripData.tripId,
+      title: tripData.title,
+      country: tripData.country,
+      city: "제주시",
+      startDate: tripData.startDate,
+      endDate: tripData.endDate,
+      memos: memos,
+    };
+    console.log(updatedTripData);
+
+    setUpdatedTripData(updatedTripData);
+  };
+
+  /*const handleUpdateTrip = async () => {
+    try {
+      const updatedTripData = {
+        tripId: tripData.tripId,
+        title: tripData.title,
+        country: tripData.country,
+        city: "제주시",
+        startDate: tripData.startDate,
+        endDate: tripData.endDate,
+        memos: memos,
+      };
+      console.log(updatedTripData);
+
+      const response = await axios.put(
+        "http://127.0.0.1:80/trip",
+        updatedTripData,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setUpdatedTripData(updatedTripData);
+      console.log(updatedTripData);
+
+      console.log(response.data);
+    } catch (error) {
+      setUpdatedTripData(updatedTripData);
+
+      console.error("Trip 업데이트 중 에러:", error);
+    }
+  };*/
+  const handleResetMemos = () => {
+    setMemos([]);
+  };
+  const superindex = useMemo(() => {
+    if (memos.length > 0) {
+      const startDate = new Date(tripData.startDate);
+      const firstMemoDate = new Date(memos[0].date);
+      const superindex = Math.ceil(
+        (firstMemoDate - startDate) / (1000 * 60 * 60 * 24)
+      );
+
+      return superindex;
+    }
+    return 1;
+  }, [memos, tripData.startDate]);
+  console.log(superindex);
+
   return (
     <ViewTripContainer>
       <HeaderContainer>
@@ -330,7 +657,11 @@ const ViewTripPage = () => {
             {format(new Date(tripData.endDate), "yyyy.MM.dd")}
           </BodyMedium12>
         </Title>
+        <button onClick={handleResetMemos}>Reset Memos</button>
+
         <BodyMedium12>여행의 묘미는 언제나!</BodyMedium12>
+        <button onClick={handleUpdateTrip}>수정완료</button>
+
         {days.map((dayInfo, dayIndex) => (
           <div style={{ width: "100%" }} key={dayInfo.day}>
             <PlaceTitle>
@@ -338,6 +669,7 @@ const ViewTripPage = () => {
               <BodyMedium15>Day {dayInfo.day}</BodyMedium15>
               <BodyMedium12>{dayInfo.date.toLocaleDateString()}</BodyMedium12>
             </PlaceTitle>
+
             {dayInfo.places.map((place, placeIndex) => (
               <PlaceComponent
                 key={placeIndex}
@@ -379,7 +711,10 @@ const ViewTripPage = () => {
               </div>
             )}
             {filteredLandmarks.map((landmark, index) => (
-              <div key={index} onClick={() => handleLandmarkClick(landmark)}>
+              <div
+                key={index}
+                onClick={() => handleLandmarkClick(landmark, index)}
+              >
                 {landmark}
               </div>
             ))}
